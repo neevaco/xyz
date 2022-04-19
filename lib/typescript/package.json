@@ -1,10 +1,9 @@
 {
   "name": "@neevaco/xyzapi",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "SDK and Typescript type definitions for neevaxyz API",
   "source": "index.ts",
   "main": "dist/main.js",
-  "type": "module",
   "homepage": "https://neeva.xyz",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
