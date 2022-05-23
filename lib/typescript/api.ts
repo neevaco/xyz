@@ -179,7 +179,7 @@ export interface CurrencyInfo {
      * @type {Array<CurrencyInfo>}
      * @memberof CurrencyInfo
      */
-    spotPrices?: Array<CurrencyInfo>;
+    spotPrice?: Array<CurrencyInfo>;
     /**
      * A formatted, human-friendly representation of the transaction value, e.g. the value in Ether, possibly with localized thousands separator and radix character.
      * @type {string}
