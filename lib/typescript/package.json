@@ -1,6 +1,6 @@
 {
   "name": "@neevaco/xyzapi",
-  "version": "0.5.0",
+  "version": "0.7.0",
   "description": "SDK and Typescript type definitions for neevaxyz API",
   "source": "index.ts",
   "main": "dist/index.js",
