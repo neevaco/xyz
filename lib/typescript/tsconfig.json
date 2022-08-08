@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "isolatedModules": true,
-    "lib": [ "ESNext", "DOM"]
+    "lib": [ "ESNext", "DOM"],
+    "target": "esnext",
   }
 }
