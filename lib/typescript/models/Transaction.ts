@@ -19,19 +19,19 @@ export class Transaction {
     * Block number of the transaction.
     */
     'blockNumber'?: number;
-    /**
-    * Index of the transaction in the block.
-    */
-    'transactionIndex'?: number;
     'gasFee'?: CurrencyInfo;
+    /**
+    * Log lines related to the transaction.
+    */
+    'logLine'?: Array<TransactionLogLine>;
     /**
     * Timestamp of the transaction in RFC 3339.
     */
     'timestamp'?: Date;
     /**
-    * Log lines related to the transaction.
+    * Index of the transaction in the block.
     */
-    'logLine'?: Array<TransactionLogLine>;
+    'transactionIndex'?: number;
 
     static readonly discriminator: string | undefined = undefined;
 
@@ -43,15 +43,15 @@ export class Transaction {
             "format": ""
         },
         {
-            "name": "transactionIndex",
-            "baseName": "transactionIndex",
-            "type": "number",
-            "format": ""
-        },
-        {
             "name": "gasFee",
             "baseName": "gasFee",
             "type": "CurrencyInfo",
+            "format": ""
+        },
+        {
+            "name": "logLine",
+            "baseName": "logLine",
+            "type": "Array<TransactionLogLine>",
             "format": ""
         },
         {
@@ -61,9 +61,9 @@ export class Transaction {
             "format": "date-time"
         },
         {
-            "name": "logLine",
-            "baseName": "logLine",
-            "type": "Array<TransactionLogLine>",
+            "name": "transactionIndex",
+            "baseName": "transactionIndex",
+            "type": "number",
             "format": ""
         }    ];
 

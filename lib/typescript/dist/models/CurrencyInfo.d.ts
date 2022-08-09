@@ -1,12 +1,12 @@
 export declare class CurrencyInfo {
-    'value'?: string;
-    'tokenValue'?: number;
-    'fiat'?: Array<CurrencyInfo>;
-    'pretty'?: string;
-    'decimals'?: number;
-    'symbol'?: string;
     'contractAddress'?: string;
+    'decimals'?: number;
+    'fiat'?: Array<CurrencyInfo>;
     'name'?: string;
+    'pretty'?: string;
+    'symbol'?: string;
+    'tokenValue'?: number;
+    'value'?: string;
     static readonly discriminator: string | undefined;
     static readonly attributeTypeMap: Array<{
         name: string;

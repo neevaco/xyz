@@ -18,6 +18,11 @@ export class OpenSeaContract {
     */
     'assetContractType'?: OpenSeaContractAssetContractTypeEnum;
     /**
+    * Total fee levied on buyers by this contract, in basis points
+    */
+    'buyerFeeBasisPoints'?: number;
+    'defaultToFiat'?: boolean;
+    /**
     * The NFT Version
     */
     'nftVersion'?: string;
@@ -25,11 +30,6 @@ export class OpenSeaContract {
     * The OpenSea Version
     */
     'openSeaVersion'?: string;
-    'defaultToFiat'?: boolean;
-    /**
-    * Total fee levied on buyers by this contract, in basis points
-    */
-    'buyerFeeBasisPoints'?: number;
     /**
     * Total fee levied on sellers by this contract, in basis points
     */
@@ -45,15 +45,9 @@ export class OpenSeaContract {
             "format": ""
         },
         {
-            "name": "nftVersion",
-            "baseName": "nftVersion",
-            "type": "string",
-            "format": ""
-        },
-        {
-            "name": "openSeaVersion",
-            "baseName": "openSeaVersion",
-            "type": "string",
+            "name": "buyerFeeBasisPoints",
+            "baseName": "buyerFeeBasisPoints",
+            "type": "number",
             "format": ""
         },
         {
@@ -63,9 +57,15 @@ export class OpenSeaContract {
             "format": ""
         },
         {
-            "name": "buyerFeeBasisPoints",
-            "baseName": "buyerFeeBasisPoints",
-            "type": "number",
+            "name": "nftVersion",
+            "baseName": "nftVersion",
+            "type": "string",
+            "format": ""
+        },
+        {
+            "name": "openSeaVersion",
+            "baseName": "openSeaVersion",
+            "type": "string",
             "format": ""
         },
         {

@@ -16,13 +16,19 @@ import { Wallet } from './Wallet';
 import { HttpFile } from '../http/http';
 
 export class SearchDocument {
+    'collection'?: Collection;
     'token'?: Token;
     'wallet'?: Wallet;
-    'collection'?: Collection;
 
     static readonly discriminator: string | undefined = undefined;
 
     static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
+        {
+            "name": "collection",
+            "baseName": "collection",
+            "type": "Collection",
+            "format": ""
+        },
         {
             "name": "token",
             "baseName": "token",
@@ -33,12 +39,6 @@ export class SearchDocument {
             "name": "wallet",
             "baseName": "wallet",
             "type": "Wallet",
-            "format": ""
-        },
-        {
-            "name": "collection",
-            "baseName": "collection",
-            "type": "Collection",
             "format": ""
         }    ];
 

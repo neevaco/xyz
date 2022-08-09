@@ -1,11 +1,11 @@
 import { CurrencyInfo } from './CurrencyInfo';
 export declare class TransactionLogLine {
     'burned'?: boolean;
-    'mint'?: boolean;
-    'logIndex'?: number;
     'fromAddress'?: string;
-    'toAddress'?: string;
+    'logIndex'?: number;
+    'mint'?: boolean;
     'price'?: CurrencyInfo;
+    'toAddress'?: string;
     static readonly discriminator: string | undefined;
     static readonly attributeTypeMap: Array<{
         name: string;

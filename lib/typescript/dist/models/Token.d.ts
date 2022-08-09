@@ -4,10 +4,10 @@ import { OpenSeaContract } from './OpenSeaContract';
 export declare class Token {
     'blockchain': BlockchainInfo;
     'contractAddress': string;
-    'tokenStandard'?: string;
-    'symbol'?: string;
     'nft'?: NonFungibleToken;
     'openSeaContract'?: OpenSeaContract;
+    'symbol'?: string;
+    'tokenStandard'?: string;
     static readonly discriminator: string | undefined;
     static readonly attributeTypeMap: Array<{
         name: string;

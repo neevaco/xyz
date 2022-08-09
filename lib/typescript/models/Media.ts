@@ -14,25 +14,25 @@ import { MediaVersion } from './MediaVersion';
 import { HttpFile } from '../http/http';
 
 export class Media {
-    'key': string;
     /**
     * URI for the image asset.
     */
     'URI'?: string;
+    'key': string;
     'version'?: Array<MediaVersion>;
 
     static readonly discriminator: string | undefined = undefined;
 
     static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
         {
-            "name": "key",
-            "baseName": "key",
+            "name": "URI",
+            "baseName": "URI",
             "type": "string",
             "format": ""
         },
         {
-            "name": "URI",
-            "baseName": "URI",
+            "name": "key",
+            "baseName": "key",
             "type": "string",
             "format": ""
         },

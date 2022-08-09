@@ -2,8 +2,8 @@ import { Collection } from './Collection';
 import { CurrencyInfo } from './CurrencyInfo';
 import { Token } from './Token';
 export declare class OwnedCollection {
-    'tokens'?: Array<Token>;
     'collection'?: Collection;
+    'tokens'?: Array<Token>;
     'totalSpent'?: CurrencyInfo;
     static readonly discriminator: string | undefined;
     static readonly attributeTypeMap: Array<{

@@ -17,20 +17,20 @@ export class MediaPreview {
     * URI for the image asset.
     */
     'URI'?: string;
-    'kind'?: MediaPreviewKindEnum;
+    /**
+    * If a video, length of video in ISO 8601 duration format.
+    */
+    'duration'?: string;
     'format'?: string;
     /**
     * The image's approximate height in pixels.
     */
     'height'?: number;
+    'kind'?: MediaPreviewKindEnum;
     /**
     * The image's approximate width in pixels.
     */
     'width'?: number;
-    /**
-    * If a video, length of video in ISO 8601 duration format.
-    */
-    'duration'?: string;
 
     static readonly discriminator: string | undefined = undefined;
 
@@ -42,9 +42,9 @@ export class MediaPreview {
             "format": ""
         },
         {
-            "name": "kind",
-            "baseName": "kind",
-            "type": "MediaPreviewKindEnum",
+            "name": "duration",
+            "baseName": "duration",
+            "type": "string",
             "format": ""
         },
         {
@@ -60,15 +60,15 @@ export class MediaPreview {
             "format": ""
         },
         {
-            "name": "width",
-            "baseName": "width",
-            "type": "number",
+            "name": "kind",
+            "baseName": "kind",
+            "type": "MediaPreviewKindEnum",
             "format": ""
         },
         {
-            "name": "duration",
-            "baseName": "duration",
-            "type": "string",
+            "name": "width",
+            "baseName": "width",
+            "type": "number",
             "format": ""
         }    ];
 

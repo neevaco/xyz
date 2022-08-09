@@ -4,19 +4,19 @@ import { Media } from './Media';
 import { SocialMedia } from './SocialMedia';
 import { URL } from './URL';
 export declare class Collection {
+    'bannerImage'?: Media;
     'blockchain': BlockchainInfo;
     'contractAddress': string;
-    'symbol'?: string;
-    'slug'?: string;
-    'name'?: string;
-    'description'?: string;
-    'shortDescription'?: string;
     'createdDate'?: Date;
-    'floorPrice'?: CurrencyInfo;
-    'bannerImage'?: Media;
+    'description'?: string;
     'featuredImage'?: Media;
-    'urls'?: Array<URL>;
+    'floorPrice'?: CurrencyInfo;
+    'name'?: string;
+    'shortDescription'?: string;
+    'slug'?: string;
     'socialMedia'?: Array<SocialMedia>;
+    'symbol'?: string;
+    'urls'?: Array<URL>;
     static readonly discriminator: string | undefined;
     static readonly attributeTypeMap: Array<{
         name: string;

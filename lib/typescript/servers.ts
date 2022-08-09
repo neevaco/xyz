@@ -49,10 +49,5 @@ export class ServerConfiguration<T extends { [key: string]: string }> implements
 }
 
 export const server1 = new ServerConfiguration<{  }>("https://api.n.xyz", {  })
-export const server2 = new ServerConfiguration<{  }>("https://m1api.n.xyz", {  })
-export const server3 = new ServerConfiguration<{  }>("https://localhost:2000", {  })
-export const server4 = new ServerConfiguration<{  }>("https://api.n.dev:2000", {  })
-export const server5 = new ServerConfiguration<{  }>("https://m1-xyzd.web3.svc.cluster.local", {  })
-export const server6 = new ServerConfiguration<{  }>("https://xyzd", {  })
 
-export const servers = [server1, server2, server3, server4, server5, server6];
+export const servers = [server1];

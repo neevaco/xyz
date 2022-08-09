@@ -19,47 +19,47 @@ import { Wallet } from './Wallet';
 import { HttpFile } from '../http/http';
 
 export class NonFungibleToken {
-    /**
-    * ID of this particular token.
-    */
-    'tokenID': string;
-    'title'?: string;
+    'attributes'?: Array<TokenAttribute>;
+    'collection'?: Collection;
     'contractTitle'?: string;
     /**
     * A description of a contract may contain markup such as HTML or Markdown.
     */
     'description'?: string;
-    'media'?: Media;
-    /**
-    * Transformed media assets that are resized and transcoded in to friendlier formats for web and mobile delivery.
-    */
-    'previews'?: Array<MediaPreview>;
-    'owner'?: Wallet;
-    'attributes'?: Array<TokenAttribute>;
-    'collection'?: Collection;
-    'purchase'?: Transaction;
     /**
     * A rough heuristic indicating the underlying technology and hypothetical durability of an asset. \"On-Chain\" assets store metadata and the asset media (e.g. SVG file, source code or MIDI) on a blockchain. \"Distributed\" assets are stored on decentralized protocols such as IPFS. \"Web\" assets are stored on services such as Amazon's S3. Each technology has different tradeoffs, in particular certain projects need more flexibility than is provided by on-chain data.\"
     */
     'durability'?: NonFungibleTokenDurabilityEnum;
+    'media'?: Media;
+    'owner'?: Wallet;
+    /**
+    * Transformed media assets that are resized and transcoded in to friendlier formats for web and mobile delivery.
+    */
+    'previews'?: Array<MediaPreview>;
     /**
     * The project name of the NFT.
     */
     'projectName'?: string;
+    'purchase'?: Transaction;
+    'title'?: string;
+    /**
+    * ID of this particular token.
+    */
+    'tokenID': string;
 
     static readonly discriminator: string | undefined = undefined;
 
     static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
         {
-            "name": "tokenID",
-            "baseName": "tokenID",
-            "type": "string",
+            "name": "attributes",
+            "baseName": "attributes",
+            "type": "Array<TokenAttribute>",
             "format": ""
         },
         {
-            "name": "title",
-            "baseName": "title",
-            "type": "string",
+            "name": "collection",
+            "baseName": "collection",
+            "type": "Collection",
             "format": ""
         },
         {
@@ -75,15 +75,15 @@ export class NonFungibleToken {
             "format": ""
         },
         {
-            "name": "media",
-            "baseName": "media",
-            "type": "Media",
+            "name": "durability",
+            "baseName": "durability",
+            "type": "NonFungibleTokenDurabilityEnum",
             "format": ""
         },
         {
-            "name": "previews",
-            "baseName": "previews",
-            "type": "Array<MediaPreview>",
+            "name": "media",
+            "baseName": "media",
+            "type": "Media",
             "format": ""
         },
         {
@@ -93,15 +93,15 @@ export class NonFungibleToken {
             "format": ""
         },
         {
-            "name": "attributes",
-            "baseName": "attributes",
-            "type": "Array<TokenAttribute>",
+            "name": "previews",
+            "baseName": "previews",
+            "type": "Array<MediaPreview>",
             "format": ""
         },
         {
-            "name": "collection",
-            "baseName": "collection",
-            "type": "Collection",
+            "name": "projectName",
+            "baseName": "projectName",
+            "type": "string",
             "format": ""
         },
         {
@@ -111,14 +111,14 @@ export class NonFungibleToken {
             "format": ""
         },
         {
-            "name": "durability",
-            "baseName": "durability",
-            "type": "NonFungibleTokenDurabilityEnum",
+            "name": "title",
+            "baseName": "title",
+            "type": "string",
             "format": ""
         },
         {
-            "name": "projectName",
-            "baseName": "projectName",
+            "name": "tokenID",
+            "baseName": "tokenID",
             "type": "string",
             "format": ""
         }    ];

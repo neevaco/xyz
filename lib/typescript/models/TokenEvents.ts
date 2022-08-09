@@ -16,27 +16,27 @@ import { HttpFile } from '../http/http';
 
 export class TokenEvents {
     /**
-    * Metadata for the token specified in the request.
-    */
-    'token'?: Array<Token>;
-    /**
     * A list of the events for a token.
     */
     'events'?: Array<Transaction>;
+    /**
+    * Metadata for the token specified in the request.
+    */
+    'token'?: Array<Token>;
 
     static readonly discriminator: string | undefined = undefined;
 
     static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
         {
-            "name": "token",
-            "baseName": "token",
-            "type": "Array<Token>",
-            "format": ""
-        },
-        {
             "name": "events",
             "baseName": "events",
             "type": "Array<Transaction>",
+            "format": ""
+        },
+        {
+            "name": "token",
+            "baseName": "token",
+            "type": "Array<Token>",
             "format": ""
         }    ];
 

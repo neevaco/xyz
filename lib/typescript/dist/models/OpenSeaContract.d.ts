@@ -1,9 +1,9 @@
 export declare class OpenSeaContract {
     'assetContractType'?: OpenSeaContractAssetContractTypeEnum;
+    'buyerFeeBasisPoints'?: number;
+    'defaultToFiat'?: boolean;
     'nftVersion'?: string;
     'openSeaVersion'?: string;
-    'defaultToFiat'?: boolean;
-    'buyerFeeBasisPoints'?: number;
     'sellerFeeBasisPoints'?: number;
     static readonly discriminator: string | undefined;
     static readonly attributeTypeMap: Array<{

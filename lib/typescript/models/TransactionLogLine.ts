@@ -18,17 +18,17 @@ export class TransactionLogLine {
     * When the value is true, it indicates that a token has been burned, and this transaction corresponds to the burn.
     */
     'burned'?: boolean;
-    /**
-    * When the value is true, it indicates this is the transaction representing a token minting.
-    */
-    'mint'?: boolean;
+    'fromAddress'?: string;
     /**
     * Index of the log in the transaction.
     */
     'logIndex'?: number;
-    'fromAddress'?: string;
-    'toAddress'?: string;
+    /**
+    * When the value is true, it indicates this is the transaction representing a token minting.
+    */
+    'mint'?: boolean;
     'price'?: CurrencyInfo;
+    'toAddress'?: string;
 
     static readonly discriminator: string | undefined = undefined;
 
@@ -40,9 +40,9 @@ export class TransactionLogLine {
             "format": ""
         },
         {
-            "name": "mint",
-            "baseName": "mint",
-            "type": "boolean",
+            "name": "fromAddress",
+            "baseName": "fromAddress",
+            "type": "string",
             "format": ""
         },
         {
@@ -52,21 +52,21 @@ export class TransactionLogLine {
             "format": ""
         },
         {
-            "name": "fromAddress",
-            "baseName": "fromAddress",
-            "type": "string",
-            "format": ""
-        },
-        {
-            "name": "toAddress",
-            "baseName": "toAddress",
-            "type": "string",
+            "name": "mint",
+            "baseName": "mint",
+            "type": "boolean",
             "format": ""
         },
         {
             "name": "price",
             "baseName": "price",
             "type": "CurrencyInfo",
+            "format": ""
+        },
+        {
+            "name": "toAddress",
+            "baseName": "toAddress",
+            "type": "string",
             "format": ""
         }    ];
 

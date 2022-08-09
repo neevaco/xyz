@@ -14,9 +14,4 @@ export declare class ServerConfiguration<T extends {
     makeRequestContext(endpoint: string, httpMethod: HttpMethod): RequestContext;
 }
 export declare const server1: ServerConfiguration<{}>;
-export declare const server2: ServerConfiguration<{}>;
-export declare const server3: ServerConfiguration<{}>;
-export declare const server4: ServerConfiguration<{}>;
-export declare const server5: ServerConfiguration<{}>;
-export declare const server6: ServerConfiguration<{}>;
 export declare const servers: ServerConfiguration<{}>[];

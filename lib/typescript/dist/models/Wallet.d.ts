@@ -5,15 +5,15 @@ import { SocialMedia } from './SocialMedia';
 import { Token } from './Token';
 import { Transaction } from './Transaction';
 export declare class Wallet {
-    'totalBalance'?: Array<CurrencyInfo>;
-    'balances'?: Array<CurrencyInfo>;
     'address': string;
-    'ens'?: Array<ENS>;
-    'socialMedia'?: Array<SocialMedia>;
-    'recentTokens'?: Array<Token>;
-    'topTokens'?: Array<Token>;
+    'balances'?: Array<CurrencyInfo>;
     'collections'?: Array<OwnedCollection>;
+    'ens'?: Array<ENS>;
     'history'?: Array<Transaction>;
+    'recentTokens'?: Array<Token>;
+    'socialMedia'?: Array<SocialMedia>;
+    'topTokens'?: Array<Token>;
+    'totalBalance'?: Array<CurrencyInfo>;
     static readonly discriminator: string | undefined;
     static readonly attributeTypeMap: Array<{
         name: string;

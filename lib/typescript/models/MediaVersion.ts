@@ -13,23 +13,23 @@
 import { HttpFile } from '../http/http';
 
 export class MediaVersion {
-    'kind'?: MediaVersionKindEnum;
-    'format'?: string;
-    'width'?: number;
-    'height'?: number;
-    'numBytes'?: number;
     /**
     * If a video, length of video in ISO 8601 duration format.
     */
     'duration'?: string;
+    'format'?: string;
+    'height'?: number;
+    'kind'?: MediaVersionKindEnum;
+    'numBytes'?: number;
+    'width'?: number;
 
     static readonly discriminator: string | undefined = undefined;
 
     static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
         {
-            "name": "kind",
-            "baseName": "kind",
-            "type": "MediaVersionKindEnum",
+            "name": "duration",
+            "baseName": "duration",
+            "type": "string",
             "format": ""
         },
         {
@@ -39,15 +39,15 @@ export class MediaVersion {
             "format": ""
         },
         {
-            "name": "width",
-            "baseName": "width",
+            "name": "height",
+            "baseName": "height",
             "type": "number",
             "format": ""
         },
         {
-            "name": "height",
-            "baseName": "height",
-            "type": "number",
+            "name": "kind",
+            "baseName": "kind",
+            "type": "MediaVersionKindEnum",
             "format": ""
         },
         {
@@ -57,9 +57,9 @@ export class MediaVersion {
             "format": ""
         },
         {
-            "name": "duration",
-            "baseName": "duration",
-            "type": "string",
+            "name": "width",
+            "baseName": "width",
+            "type": "number",
             "format": ""
         }    ];
 

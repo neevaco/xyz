@@ -1,8 +1,8 @@
 export declare class BlockchainInfo {
-    'name'?: string;
-    'shortName'?: string;
     'chainID'?: string;
+    'name'?: string;
     'shortChainID'?: string;
+    'shortName'?: string;
     static readonly discriminator: string | undefined;
     static readonly attributeTypeMap: Array<{
         name: string;

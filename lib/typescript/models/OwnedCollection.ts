@@ -16,26 +16,26 @@ import { Token } from './Token';
 import { HttpFile } from '../http/http';
 
 export class OwnedCollection {
+    'collection'?: Collection;
     /**
     * A sample of the tokens owned by this wallet.
     */
     'tokens'?: Array<Token>;
-    'collection'?: Collection;
     'totalSpent'?: CurrencyInfo;
 
     static readonly discriminator: string | undefined = undefined;
 
     static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
         {
-            "name": "tokens",
-            "baseName": "tokens",
-            "type": "Array<Token>",
-            "format": ""
-        },
-        {
             "name": "collection",
             "baseName": "collection",
             "type": "Collection",
+            "format": ""
+        },
+        {
+            "name": "tokens",
+            "baseName": "tokens",
+            "type": "Array<Token>",
             "format": ""
         },
         {

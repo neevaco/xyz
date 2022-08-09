@@ -1,7 +1,7 @@
 import { MediaVersion } from './MediaVersion';
 export declare class Media {
-    'key': string;
     'URI'?: string;
+    'key': string;
     'version'?: Array<MediaVersion>;
     static readonly discriminator: string | undefined;
     static readonly attributeTypeMap: Array<{

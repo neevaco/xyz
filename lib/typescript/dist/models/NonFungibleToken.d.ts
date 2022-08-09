@@ -5,18 +5,18 @@ import { TokenAttribute } from './TokenAttribute';
 import { Transaction } from './Transaction';
 import { Wallet } from './Wallet';
 export declare class NonFungibleToken {
-    'tokenID': string;
-    'title'?: string;
-    'contractTitle'?: string;
-    'description'?: string;
-    'media'?: Media;
-    'previews'?: Array<MediaPreview>;
-    'owner'?: Wallet;
     'attributes'?: Array<TokenAttribute>;
     'collection'?: Collection;
-    'purchase'?: Transaction;
+    'contractTitle'?: string;
+    'description'?: string;
     'durability'?: NonFungibleTokenDurabilityEnum;
+    'media'?: Media;
+    'owner'?: Wallet;
+    'previews'?: Array<MediaPreview>;
     'projectName'?: string;
+    'purchase'?: Transaction;
+    'title'?: string;
+    'tokenID': string;
     static readonly discriminator: string | undefined;
     static readonly attributeTypeMap: Array<{
         name: string;

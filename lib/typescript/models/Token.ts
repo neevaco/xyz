@@ -21,10 +21,10 @@ export class Token {
     * Address of the contract that minted this NFT.
     */
     'contractAddress': string;
-    'tokenStandard'?: string;
-    'symbol'?: string;
     'nft'?: NonFungibleToken;
     'openSeaContract'?: OpenSeaContract;
+    'symbol'?: string;
+    'tokenStandard'?: string;
 
     static readonly discriminator: string | undefined = undefined;
 
@@ -42,18 +42,6 @@ export class Token {
             "format": ""
         },
         {
-            "name": "tokenStandard",
-            "baseName": "tokenStandard",
-            "type": "string",
-            "format": ""
-        },
-        {
-            "name": "symbol",
-            "baseName": "symbol",
-            "type": "string",
-            "format": ""
-        },
-        {
             "name": "nft",
             "baseName": "nft",
             "type": "NonFungibleToken",
@@ -63,6 +51,18 @@ export class Token {
             "name": "openSeaContract",
             "baseName": "openSeaContract",
             "type": "OpenSeaContract",
+            "format": ""
+        },
+        {
+            "name": "symbol",
+            "baseName": "symbol",
+            "type": "string",
+            "format": ""
+        },
+        {
+            "name": "tokenStandard",
+            "baseName": "tokenStandard",
+            "type": "string",
             "format": ""
         }    ];
 

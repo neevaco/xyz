@@ -1,8 +1,8 @@
 export declare class ENS {
-    'name'?: string;
-    'pointsTo'?: string;
     'expires'?: Date;
     'isPrimary'?: boolean;
+    'name'?: string;
+    'pointsTo'?: string;
     static readonly discriminator: string | undefined;
     static readonly attributeTypeMap: Array<{
         name: string;

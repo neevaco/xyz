@@ -86,9 +86,9 @@ const apiInstance = new .DefaultApi(configuration);
 
 let body:.DefaultApiGetCollectionRequest = {
   // string | A hex address for a blockchain contract.
-  contractAddress: "958237404572149487844347638744027794982139843184",
+  contractAddress: "0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270",
   // string | An identifier to restrict results to a given blockchain. Provide either a keyword such as \"ethereum\" or \"polygon\" to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers. (optional)
-  chainID: "ethereum",
+  chainID: "eip155:1",
 };
 
 apiInstance.getCollection(body).then((data:any) => {
@@ -143,9 +143,9 @@ const apiInstance = new .DefaultApi(configuration);
 
 let body:.DefaultApiGetContractTokensRequest = {
   // string | A hex address for a blockchain contract.
-  contractAddress: "958237404572149487844347638744027794982139843184",
+  contractAddress: "0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270",
   // string | An identifier to restrict results to a given blockchain. Provide either a keyword such as \"ethereum\" or \"polygon\" to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers. (optional)
-  chainID: "ethereum",
+  chainID: "eip155:1",
   // number | Limits the number of results in a single response. (optional)
   limit: 25,
 };
@@ -207,7 +207,7 @@ let body:.DefaultApiGetContractTokensByContractAndIDRequest = {
   // string | A comma-separated token ID, the order of values should match the order in contractAddresses.
   tokenIdentifiers: "3481,50603",
   // string | An identifier to restrict results to a given blockchain. Provide either a keyword such as \"ethereum\" or \"polygon\" to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers. (optional)
-  chainID: "ethereum",
+  chainID: "eip155:1",
   // number | Limits the number of results in a single response. (optional)
   limit: 25,
 };
@@ -266,11 +266,11 @@ const apiInstance = new .DefaultApi(configuration);
 
 let body:.DefaultApiGetContractTransactionHistoryRequest = {
   // string | A hex address for a blockchain contract.
-  contractAddress: "958237404572149487844347638744027794982139843184",
+  contractAddress: "0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270",
   // string | Cursor to support API pagination. (optional)
   cursor: "8d7XKgOtUB7qNJibGMR1GQNxL0Ese88czy_89GL_tKjRDHW1QCkjEWBMDLVMwGd1ZxSWaNYKxDpo9URH2HdQ2oaED41tq2lemewmDIvflmk=",
   // string | An identifier to restrict results to a given blockchain. Provide either a keyword such as \"ethereum\" or \"polygon\" to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers. (optional)
-  chainID: "ethereum",
+  chainID: "eip155:1",
   // number | Limits the number of results in a single response. (optional)
   limit: 25,
 };
@@ -386,9 +386,9 @@ const apiInstance = new .DefaultApi(configuration);
 
 let body:.DefaultApiGetSoldTokensRequest = {
   // string | A hex string referencing a public wallet address.
-  walletAddress: "347255425593717215243995841323468549312392088481",
+  walletAddress: "0x3cd378c9b1cb5f147ebf1b2c2564118946ae4ba1",
   // string | An identifier to restrict results to a given blockchain. Provide either a keyword such as \"ethereum\" or \"polygon\" to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers. (optional)
-  chainID: "ethereum",
+  chainID: "eip155:1",
   // string | Cursor to support API pagination. (optional)
   cursor: "8d7XKgOtUB7qNJibGMR1GQNxL0Ese88czy_89GL_tKjRDHW1QCkjEWBMDLVMwGd1ZxSWaNYKxDpo9URH2HdQ2oaED41tq2lemewmDIvflmk=",
   // number | Limits the number of results in a single response. (optional)
@@ -449,11 +449,11 @@ const apiInstance = new .DefaultApi(configuration);
 
 let body:.DefaultApiGetTokenRequest = {
   // string | A hex address for a blockchain contract.
-  contractAddress: "958237404572149487844347638744027794982139843184",
+  contractAddress: "0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270",
   // string | An arbitrary ID defined by a contract to uniquely identify a cryptographic asset such as an NFT.
   tokenID: "228000094",
   // string | An identifier to restrict results to a given blockchain. Provide either a keyword such as \"ethereum\" or \"polygon\" to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers. (optional)
-  chainID: "ethereum",
+  chainID: "eip155:1",
 };
 
 apiInstance.getToken(body).then((data:any) => {
@@ -511,11 +511,11 @@ let body:.DefaultApiGetTokenGateRequest = {
   // string | An arbitrary ID defined by a contract to uniquely identify a cryptographic asset such as an NFT.
   tokenID: "228000094",
   // string | A hex address for a blockchain contract.
-  contractAddress: "958237404572149487844347638744027794982139843184",
+  contractAddress: "0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270",
   // string | A hex string referencing a public wallet address.
-  walletAddress: "347255425593717215243995841323468549312392088481",
+  walletAddress: "0x3cd378c9b1cb5f147ebf1b2c2564118946ae4ba1",
   // string | An identifier to restrict results to a given blockchain. Provide either a keyword such as \"ethereum\" or \"polygon\" to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers. (optional)
-  chainID: "ethereum",
+  chainID: "eip155:1",
 };
 
 apiInstance.getTokenGate(body).then((data:any) => {
@@ -572,11 +572,11 @@ const apiInstance = new .DefaultApi(configuration);
 
 let body:.DefaultApiGetTokenTransfersRequest = {
   // string | A hex address for a blockchain contract.
-  contractAddress: "958237404572149487844347638744027794982139843184",
+  contractAddress: "0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270",
   // string | An arbitrary ID defined by a contract to uniquely identify a cryptographic asset such as an NFT.
   tokenID: "228000094",
   // string | An identifier to restrict results to a given blockchain. Provide either a keyword such as \"ethereum\" or \"polygon\" to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers. (optional)
-  chainID: "ethereum",
+  chainID: "eip155:1",
   // number | Limits the number of results in a single response. (optional)
   limit: 25,
 };
@@ -692,9 +692,9 @@ const apiInstance = new .DefaultApi(configuration);
 
 let body:.DefaultApiGetWalletRequest = {
   // string | A hex string referencing a public wallet address.
-  walletAddress: "347255425593717215243995841323468549312392088481",
+  walletAddress: "0x3cd378c9b1cb5f147ebf1b2c2564118946ae4ba1",
   // string | An identifier to restrict results to a given blockchain. Provide either a keyword such as \"ethereum\" or \"polygon\" to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers. (optional)
-  chainID: "ethereum",
+  chainID: "eip155:1",
 };
 
 apiInstance.getWallet(body).then((data:any) => {
@@ -749,7 +749,7 @@ const apiInstance = new .DefaultApi(configuration);
 
 let body:.DefaultApiGetWalletBalancesRequest = {
   // string | A hex string referencing a public wallet address.
-  walletAddress: "347255425593717215243995841323468549312392088481",
+  walletAddress: "0x3cd378c9b1cb5f147ebf1b2c2564118946ae4ba1",
   // number | Limits the number of results in a single response. (optional)
   limit: 25,
 };
@@ -806,9 +806,9 @@ const apiInstance = new .DefaultApi(configuration);
 
 let body:.DefaultApiGetWalletMintsRequest = {
   // string | A hex string referencing a public wallet address.
-  walletAddress: "347255425593717215243995841323468549312392088481",
+  walletAddress: "0x3cd378c9b1cb5f147ebf1b2c2564118946ae4ba1",
   // string | An identifier to restrict results to a given blockchain. Provide either a keyword such as \"ethereum\" or \"polygon\" to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers. (optional)
-  chainID: "ethereum",
+  chainID: "eip155:1",
   // string | Cursor to support API pagination. (optional)
   cursor: "8d7XKgOtUB7qNJibGMR1GQNxL0Ese88czy_89GL_tKjRDHW1QCkjEWBMDLVMwGd1ZxSWaNYKxDpo9URH2HdQ2oaED41tq2lemewmDIvflmk=",
   // number | Limits the number of results in a single response. (optional)
@@ -869,11 +869,11 @@ const apiInstance = new .DefaultApi(configuration);
 
 let body:.DefaultApiGetWalletTokensRequest = {
   // string | A hex string referencing a public wallet address.
-  walletAddress: "347255425593717215243995841323468549312392088481",
+  walletAddress: "0x3cd378c9b1cb5f147ebf1b2c2564118946ae4ba1",
   // string | Cursor to support API pagination. (optional)
   cursor: "8d7XKgOtUB7qNJibGMR1GQNxL0Ese88czy_89GL_tKjRDHW1QCkjEWBMDLVMwGd1ZxSWaNYKxDpo9URH2HdQ2oaED41tq2lemewmDIvflmk=",
   // string | An identifier to restrict results to a given blockchain. Provide either a keyword such as \"ethereum\" or \"polygon\" to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers. (optional)
-  chainID: "ethereum",
+  chainID: "eip155:1",
   // number | Limits the number of results in a single response. (optional)
   limit: 25,
 };
@@ -932,13 +932,13 @@ const apiInstance = new .DefaultApi(configuration);
 
 let body:.DefaultApiGetWalletTransactionsRequest = {
   // string | A hex string referencing a public wallet address.
-  walletAddress: "347255425593717215243995841323468549312392088481",
+  walletAddress: "0x3cd378c9b1cb5f147ebf1b2c2564118946ae4ba1",
   // string | Cursor to support API pagination. (optional)
   cursor: "8d7XKgOtUB7qNJibGMR1GQNxL0Ese88czy_89GL_tKjRDHW1QCkjEWBMDLVMwGd1ZxSWaNYKxDpo9URH2HdQ2oaED41tq2lemewmDIvflmk=",
   // number | Limits the number of results in a single response. (optional)
   limit: 25,
   // string | An identifier to restrict results to a given blockchain. Provide either a keyword such as \"ethereum\" or \"polygon\" to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers. (optional)
-  chainID: "ethereum",
+  chainID: "eip155:1",
   // 'NFT' | 'SFT' | 'unknown' | An indicator that be used to filter to only a subet of tokens, for example only NFTs. (optional)
   tokenType: "NFT",
 };

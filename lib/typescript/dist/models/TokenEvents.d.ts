@@ -1,8 +1,8 @@
 import { Token } from './Token';
 import { Transaction } from './Transaction';
 export declare class TokenEvents {
-    'token'?: Array<Token>;
     'events'?: Array<Transaction>;
+    'token'?: Array<Token>;
     static readonly discriminator: string | undefined;
     static readonly attributeTypeMap: Array<{
         name: string;

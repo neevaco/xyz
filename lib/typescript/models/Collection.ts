@@ -18,29 +18,35 @@ import { URL } from './URL';
 import { HttpFile } from '../http/http';
 
 export class Collection {
+    'bannerImage'?: Media;
     'blockchain': BlockchainInfo;
     /**
     * Address of the contract that minted this NFT.
     */
     'contractAddress': string;
-    'symbol'?: string;
-    'slug'?: string;
-    'name'?: string;
-    'description'?: string;
-    'shortDescription'?: string;
     /**
     * Timestamp of creation of this contract in RFC 3339.
     */
     'createdDate'?: Date;
-    'floorPrice'?: CurrencyInfo;
-    'bannerImage'?: Media;
+    'description'?: string;
     'featuredImage'?: Media;
-    'urls'?: Array<URL>;
+    'floorPrice'?: CurrencyInfo;
+    'name'?: string;
+    'shortDescription'?: string;
+    'slug'?: string;
     'socialMedia'?: Array<SocialMedia>;
+    'symbol'?: string;
+    'urls'?: Array<URL>;
 
     static readonly discriminator: string | undefined = undefined;
 
     static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
+        {
+            "name": "bannerImage",
+            "baseName": "bannerImage",
+            "type": "Media",
+            "format": ""
+        },
         {
             "name": "blockchain",
             "baseName": "blockchain",
@@ -54,26 +60,32 @@ export class Collection {
             "format": ""
         },
         {
-            "name": "symbol",
-            "baseName": "symbol",
+            "name": "createdDate",
+            "baseName": "createdDate",
+            "type": "Date",
+            "format": "date-time"
+        },
+        {
+            "name": "description",
+            "baseName": "description",
             "type": "string",
             "format": ""
         },
         {
-            "name": "slug",
-            "baseName": "slug",
-            "type": "string",
+            "name": "featuredImage",
+            "baseName": "featuredImage",
+            "type": "Media",
+            "format": ""
+        },
+        {
+            "name": "floorPrice",
+            "baseName": "floorPrice",
+            "type": "CurrencyInfo",
             "format": ""
         },
         {
             "name": "name",
             "baseName": "name",
-            "type": "string",
-            "format": ""
-        },
-        {
-            "name": "description",
-            "baseName": "description",
             "type": "string",
             "format": ""
         },
@@ -84,39 +96,27 @@ export class Collection {
             "format": ""
         },
         {
-            "name": "createdDate",
-            "baseName": "createdDate",
-            "type": "Date",
-            "format": "date-time"
-        },
-        {
-            "name": "floorPrice",
-            "baseName": "floorPrice",
-            "type": "CurrencyInfo",
-            "format": ""
-        },
-        {
-            "name": "bannerImage",
-            "baseName": "bannerImage",
-            "type": "Media",
-            "format": ""
-        },
-        {
-            "name": "featuredImage",
-            "baseName": "featuredImage",
-            "type": "Media",
-            "format": ""
-        },
-        {
-            "name": "urls",
-            "baseName": "urls",
-            "type": "Array<URL>",
+            "name": "slug",
+            "baseName": "slug",
+            "type": "string",
             "format": ""
         },
         {
             "name": "socialMedia",
             "baseName": "socialMedia",
             "type": "Array<SocialMedia>",
+            "format": ""
+        },
+        {
+            "name": "symbol",
+            "baseName": "symbol",
+            "type": "string",
+            "format": ""
+        },
+        {
+            "name": "urls",
+            "baseName": "urls",
+            "type": "Array<URL>",
             "format": ""
         }    ];
 

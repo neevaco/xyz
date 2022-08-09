@@ -14,14 +14,6 @@ import { HttpFile } from '../http/http';
 
 export class ENS {
     /**
-    * The ENS or domain name.
-    */
-    'name'?: string;
-    /**
-    * The address the ENS record points to.
-    */
-    'pointsTo'?: string;
-    /**
     * Date the ENS registration expires.
     */
     'expires'?: Date;
@@ -29,22 +21,18 @@ export class ENS {
     * A wallet address can have multiple ENS records. The primary ENS name represents a \"cross-platform web3 username and profile.\" A wallet address can only have one primary name, and it can change at any time.
     */
     'isPrimary'?: boolean;
+    /**
+    * The ENS or domain name.
+    */
+    'name'?: string;
+    /**
+    * The address the ENS record points to.
+    */
+    'pointsTo'?: string;
 
     static readonly discriminator: string | undefined = undefined;
 
     static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
-        {
-            "name": "name",
-            "baseName": "name",
-            "type": "string",
-            "format": ""
-        },
-        {
-            "name": "pointsTo",
-            "baseName": "pointsTo",
-            "type": "string",
-            "format": ""
-        },
         {
             "name": "expires",
             "baseName": "expires",
@@ -55,6 +43,18 @@ export class ENS {
             "name": "isPrimary",
             "baseName": "isPrimary",
             "type": "boolean",
+            "format": ""
+        },
+        {
+            "name": "name",
+            "baseName": "name",
+            "type": "string",
+            "format": ""
+        },
+        {
+            "name": "pointsTo",
+            "baseName": "pointsTo",
+            "type": "string",
             "format": ""
         }    ];
 

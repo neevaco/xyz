@@ -1,10 +1,10 @@
 export declare class MediaPreview {
     'URI'?: string;
-    'kind'?: MediaPreviewKindEnum;
+    'duration'?: string;
     'format'?: string;
     'height'?: number;
+    'kind'?: MediaPreviewKindEnum;
     'width'?: number;
-    'duration'?: string;
     static readonly discriminator: string | undefined;
     static readonly attributeTypeMap: Array<{
         name: string;
