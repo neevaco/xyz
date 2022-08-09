@@ -24,7 +24,8 @@
   "homepage": "https://n.xyz",
   "typings": "./dist/index.d.ts",
   "scripts": {
-    "build": " mv .npmrc package.json ./../../ && rm -R ./* && openapi-generator generate -i https://api.n.xyz/api.json --additional-properties=supportsES6=true,typescriptThreePlus=true -g typescript  -o /tmp/typescript && cp -R /tmp/typescript/* ./ && rm -R /tmp/typescript/* && mv -f ./../../.npmrc ./../../package.json ./ && npm install && tsc",
+    "update": "mv .npmrc package.json ./../../ && rm -R ./* && openapi-generator generate -i https://api.n.xyz/api.json --additional-properties=supportsES6=true,typescriptThreePlus=true -g typescript  -o /tmp/typescript && cp -R /tmp/typescript/* ./ && rm -R /tmp/typescript/* && mv -f ./../../.npmrc ./../../package.json ./ && npm install",
+    "build": "tsc",
     "prepare": "npm run build"
   },
   "dependencies": {
