@@ -1,25 +1,27 @@
 {
   "name": "@neevaco/xyzapi",
   "version": "0.10.0",
-  "description": "OpenAPI client for ",
-  "author": "OpenAPI-Generator Contributors",
+  "description": "SDK and Typescript type definitions for nxyz API",
   "repository": {
     "type": "git",
-    "url": "https://github.com/GIT_USER_ID/GIT_REPO_ID.git"
+    "url": "git+https://github.com/neevaco/xyz.git"
   },
+  "author": "Joshua Davis <joshua@n.xyz>", 
   "keywords": [
-    "fetch",
-    "typescript",
-    "openapi-client",
-    "openapi-generator"
+    "nxyz",
+    "neeva",
+    "xyzapi"
   ],
-  "license": "Unlicense",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "main": "./dist/index.js",
   "type": "module",
   "module": "./dist/index.js",
   "exports": {
     ".": "./dist/index.js"
   },
+  "homepage": "https://n.xyz",
   "typings": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc",
