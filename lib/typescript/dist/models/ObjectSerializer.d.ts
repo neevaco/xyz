@@ -1,0 +1,30 @@
+export * from './BlockchainInfo';
+export * from './Collection';
+export * from './CurrencyInfo';
+export * from './ENS';
+export * from './ErrorMessage';
+export * from './Media';
+export * from './MediaPreview';
+export * from './MediaVersion';
+export * from './NonFungibleToken';
+export * from './OpenSeaContract';
+export * from './OwnedCollection';
+export * from './SearchDocument';
+export * from './SocialMedia';
+export * from './Token';
+export * from './TokenAttribute';
+export * from './TokenEvents';
+export * from './TokenGate';
+export * from './Transaction';
+export * from './TransactionLogLine';
+export * from './URL';
+export * from './Wallet';
+export declare class ObjectSerializer {
+    static findCorrectType(data: any, expectedType: string): any;
+    static serialize(data: any, type: string, format: string): any;
+    static deserialize(data: any, type: string, format: string): any;
+    static normalizeMediaType(mediaType: string | undefined): string | undefined;
+    static getPreferredMediaType(mediaTypes: Array<string>): string;
+    static stringify(data: any, mediaType: string): string;
+    static parse(rawData: string, mediaType: string | undefined): any;
+}
