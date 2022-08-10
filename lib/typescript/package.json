@@ -1,19 +1,16 @@
 {
-  "name": "@neevaco/xyzapi",
+  "name": "@nxyzinc/xyzapi",
   "version": "0.9.1",
   "description": "SDK and Typescript type definitions for neevaxyz API",
   "source": "index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "homepage": "https://n.xyz",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/neevaco/xyz.git"
   },
-  "author": "Joshua Davis <joshua@n.xyz>",  
+  "author": "Joshua Davis <joshua@n.xyz>",
   "scripts": {
     "watch": "parcel watch index.ts",
     "build": "parcel build index.ts"
@@ -26,6 +23,9 @@
   },
   "dependencies": {
     "isomorphic-fetch": "^3.0.0"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/neevaco/xyz/issues"
+  },
+  "license": "SEE LICENSE IN <LICENSE>"
 }
-
