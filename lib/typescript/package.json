@@ -1,28 +1,41 @@
 {
   "name": "@nxyzinc/xyzapi",
-  "version": "0.9.1",
-  "description": "SDK and Typescript type definitions for neevaxyz API",
-  "source": "index.ts",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "homepage": "https://n.xyz",
+  "version": "0.10.0",
+  "description": "SDK and Typescript type definitions for nxyz API",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/neevaco/xyz.git"
   },
-  "author": "Joshua Davis <joshua@n.xyz>",
-  "scripts": {
-    "watch": "parcel watch index.ts",
-    "build": "parcel build index.ts"
+  "author": "Joshua Davis <joshua@n.xyz>", 
+  "keywords": [
+    "nxyz",
+    "neeva",
+    "xyzapi"
+  ],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   },
-  "devDependencies": {
-    "@parcel/packager-ts": "2.4.1",
-    "@parcel/transformer-typescript-types": "2.4.1",
-    "parcel": "^2.4.1",
-    "typescript": ">=3.0.0"
+  "main": "./dist/index.js",
+  "type": "module",
+  "module": "./dist/index.js",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "homepage": "https://n.xyz",
+  "typings": "./dist/index.d.ts",
+  "scripts": {
+    "update": "mv package.json ./../../ && rm -R ./* && openapi-generator generate -i https://api.n.xyz/api.json --additional-properties=supportsES6=true,typescriptThreePlus=true -g typescript  -o /tmp/typescript && cp -R /tmp/typescript/* ./ && rm -R /tmp/typescript/* && mv -f ./../../package.json ./ && npm install",
+    "build": "tsc",
+    "prepare": "npm run build"
   },
   "dependencies": {
-    "isomorphic-fetch": "^3.0.0"
+    "whatwg-fetch": "^3.0.0",
+    "es6-promise": "^4.2.4",
+    "url-parse": "^1.4.3"
+  },
+  "devDependencies": {
+    "typescript": "^4.0",
+    "@types/url-parse": "1.4.4"
   },
   "bugs": {
     "url": "https://github.com/neevaco/xyz/issues"
