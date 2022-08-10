@@ -1,3 +1,4 @@
+import { MediaPreview } from './MediaPreview';
 export declare class CurrencyInfo {
     'contractAddress'?: string;
     'decimals'?: number;
@@ -5,6 +6,7 @@ export declare class CurrencyInfo {
     'name'?: string;
     'pretty'?: string;
     'symbol'?: string;
+    'symbolLogos'?: Array<MediaPreview>;
     'tokenValue'?: number;
     'value'?: string;
     static readonly discriminator: string | undefined;

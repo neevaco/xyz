@@ -149,7 +149,7 @@ export class DefaultApiRequestFactory extends BaseAPIRequestFactory {
     }
 
     /**
-     * Get tokens by a pair of contract addresses and token IDs. The input are two ordered arrays. The first element of contractAddresses should be related to the 1st element of the tokenID, etc. In the below example two tokens are being requested, token 3481 from the \"goblintown\" contract (i.e. 0xbce3781ae7ca1a5e050bd9c4c77369867ebc307e) and token 50603 from the Otherdeed contract (i.e. 0x34d85c9cdeb23fa97cb08333b511ac86e1c4e258).
+     * Returns tokens from a batch lookup.
      * @param contractAddresses A comma-separated hex address for a blockchain contract, the order of values should match the order in tokenIdentifiers.
      * @param tokenIdentifiers A comma-separated token ID, the order of values should match the order in contractAddresses.
      * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
@@ -795,7 +795,7 @@ export class DefaultApiRequestFactory extends BaseAPIRequestFactory {
     }
 
     /**
-     * Returns a list of transactions that have been performed by this wallet. Use token type to restrict to only certain transactions, such as NFTs
+     * Returns transactions related to a wallet.
      * @param walletAddress A hex string referencing a public wallet address.
      * @param cursor Cursor to support API pagination.
      * @param limit Limits the number of results in a single response.

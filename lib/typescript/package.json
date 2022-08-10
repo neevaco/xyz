@@ -12,9 +12,6 @@
     "neeva",
     "xyzapi"
   ],
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  },
   "main": "./dist/index.js",
   "type": "module",
   "module": "./dist/index.js",
