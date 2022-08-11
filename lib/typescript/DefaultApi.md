@@ -7,7 +7,7 @@ Method | HTTP request | Description
 [**getBlockchains**](DefaultApi.md#getBlockchains) | **GET** /api/v1/blockchains | Lists all supported blockchains.
 [**getCollection**](DefaultApi.md#getCollection) | **GET** /api/v1/collections/{contractAddress} | Get a collection by its contract address.
 [**getContractTokens**](DefaultApi.md#getContractTokens) | **GET** /api/v1/tokens/{contractAddress} | Get tokens by contract address.
-[**getContractTokensByContractAndID**](DefaultApi.md#getContractTokensByContractAndID) | **GET** /api/v1/token-batch | Get tokens by a pair of contract addresses and token IDs. The input are two ordered arrays. The first element of contractAddresses should be related to the 1st element of the tokenID, etc. In the below example two tokens are being requested, token 3481 from the \&quot;goblintown\&quot; contract (i.e. 0xbce3781ae7ca1a5e050bd9c4c77369867ebc307e) and token 50603 from the Otherdeed contract (i.e. 0x34d85c9cdeb23fa97cb08333b511ac86e1c4e258).
+[**getContractTokensByContractAndID**](DefaultApi.md#getContractTokensByContractAndID) | **GET** /api/v1/token-batch | Returns tokens from a batch lookup.
 [**getContractTransactionHistory**](DefaultApi.md#getContractTransactionHistory) | **GET** /api/v1/collections/{contractAddress}/transactions/history | Get the transaction history for a collection
 [**getSearchResults**](DefaultApi.md#getSearchResults) | **GET** /api/v1/search/{query} | Get search results such as wallets, tokens, and collections by a search query.
 [**getSoldTokens**](DefaultApi.md#getSoldTokens) | **GET** /api/v1/wallets/{walletAddress}/sold-tokens | Returns a list of tokens sold by a wallet.
@@ -19,7 +19,7 @@ Method | HTTP request | Description
 [**getWalletBalances**](DefaultApi.md#getWalletBalances) | **GET** /api/v1/wallets/{walletAddress}/balances | Returns a list of balances for tokens this wallet currently owns.
 [**getWalletMints**](DefaultApi.md#getWalletMints) | **GET** /api/v1/wallets/{walletAddress}/mints | Returns a list of tokens minted by a wallet.
 [**getWalletTokens**](DefaultApi.md#getWalletTokens) | **GET** /api/v1/wallets/{walletAddress}/tokens | Returns a list of tokens owned by a wallet.
-[**getWalletTransactions**](DefaultApi.md#getWalletTransactions) | **GET** /api/v1/wallets/{walletAddress}/transactions/history | Returns a list of transactions that have been performed by this wallet. Use token type to restrict to only certain transactions, such as NFTs
+[**getWalletTransactions**](DefaultApi.md#getWalletTransactions) | **GET** /api/v1/wallets/{walletAddress}/transactions/history | Returns transactions related to a wallet.
 
 
 # **getBlockchains**
@@ -245,7 +245,7 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | A list of tokens that belong to this contract. |  -  |
+**200** | Gets a list of tokens by a pair of contract addresses and token IDs. The input is two ordered arrays. The first element of contractAddresses should be related to the 1st element of the tokenID, etc. In the below example two tokens are being requested, token 3481 from the \&quot;goblintown\&quot; contract (i.e. 0xbce3781ae7ca1a5e050bd9c4c77369867ebc307e) and token 50603 from the Otherdeed contract (i.e. 0x34d85c9cdeb23fa97cb08333b511ac86e1c4e258). |  -  |
 **0** | An error message for unexpected requests. |  * X-RateLimit-Limit -  <br>  * X-RateLimit-Remaining -  <br>  * X-RateLimit-Reset -  <br>  |
 
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
@@ -977,7 +977,7 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | A paginated list of transactions that are related to the specified wallet. |  -  |
+**200** | Returns a list of transactions that have been performed by this wallet. Use token type to restrict to only certain transactions, such as NFTs |  -  |
 **0** | An error message for unexpected requests. |  * X-RateLimit-Limit -  <br>  * X-RateLimit-Remaining -  <br>  * X-RateLimit-Reset -  <br>  |
 
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)

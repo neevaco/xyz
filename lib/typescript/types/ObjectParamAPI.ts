@@ -446,7 +446,7 @@ export class ObjectDefaultApi {
     }
 
     /**
-     * Get tokens by a pair of contract addresses and token IDs. The input are two ordered arrays. The first element of contractAddresses should be related to the 1st element of the tokenID, etc. In the below example two tokens are being requested, token 3481 from the \"goblintown\" contract (i.e. 0xbce3781ae7ca1a5e050bd9c4c77369867ebc307e) and token 50603 from the Otherdeed contract (i.e. 0x34d85c9cdeb23fa97cb08333b511ac86e1c4e258).
+     * Returns tokens from a batch lookup.
      * @param param the request object
      */
     public getContractTokensByContractAndID(param: DefaultApiGetContractTokensByContractAndIDRequest, options?: Configuration): Promise<Array<Token>> {
@@ -542,7 +542,7 @@ export class ObjectDefaultApi {
     }
 
     /**
-     * Returns a list of transactions that have been performed by this wallet. Use token type to restrict to only certain transactions, such as NFTs
+     * Returns transactions related to a wallet.
      * @param param the request object
      */
     public getWalletTransactions(param: DefaultApiGetWalletTransactionsRequest, options?: Configuration): Promise<Array<Transaction>> {
