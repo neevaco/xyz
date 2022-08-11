@@ -18,7 +18,7 @@
   "types": "dist/index.d.ts",
   "homepage": "https://n.xyz",
   "scripts": {
-    "update": "mv package.json index.ts ./../../ && rm -R ./* && openapi-generator generate -i https://api.n.xyz/api.json --additional-properties=supportsES6=true,typescriptThreePlus=true -g typescript  -o /tmp/typescript && cp -R /tmp/typescript/* ./ && rm -R /tmp/typescript/* && mv -f ./../../package.json ./../../index.ts ./ && npm install",
+    "update": "mv package.json index.ts ./../../ ; rm -R ./* ; openapi-generator generate -i https://api.n.xyz/api.json --additional-properties=supportsES6=true,typescriptThreePlus=true -g typescript  -o /tmp/typescript ; cp -R /tmp/typescript/* ./ ; rm -R /tmp/typescript/* ; mv -f ./../../package.json ./../../index.ts ./ ; npm install",
     "watch": "parcel watch index.ts",
     "build": "parcel build index.ts",
     "prepare": "npm run build"
