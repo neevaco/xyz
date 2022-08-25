@@ -3,11 +3,15 @@ import * as models from '../models/all';
 import { Configuration} from '../configuration'
 import { Observable, of, from } from '../rxjsStub';
 import {mergeMap, map} from  '../rxjsStub';
+import { AssetGate } from '../models/AssetGate';
+import { AutoSuggestion } from '../models/AutoSuggestion';
 import { BlockchainInfo } from '../models/BlockchainInfo';
 import { Collection } from '../models/Collection';
+import { CreditEvent } from '../models/CreditEvent';
 import { CurrencyInfo } from '../models/CurrencyInfo';
 import { ENS } from '../models/ENS';
 import { ErrorMessage } from '../models/ErrorMessage';
+import { ExchangeEvent } from '../models/ExchangeEvent';
 import { Media } from '../models/Media';
 import { MediaPreview } from '../models/MediaPreview';
 import { MediaVersion } from '../models/MediaVersion';
@@ -19,7 +23,6 @@ import { SocialMedia } from '../models/SocialMedia';
 import { Token } from '../models/Token';
 import { TokenAttribute } from '../models/TokenAttribute';
 import { TokenEvents } from '../models/TokenEvents';
-import { TokenGate } from '../models/TokenGate';
 import { Transaction } from '../models/Transaction';
 import { TransactionLogLine } from '../models/TransactionLogLine';
 import { URL } from '../models/URL';
@@ -172,6 +175,31 @@ export class ObservableDefaultApi {
     }
 
     /**
+     * Determine if a wallet has any token from a contract.
+     * @param contractAddress A hex address for a blockchain contract.
+     * @param walletAddress A hex string referencing a public wallet address.
+     * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
+     */
+    public getContractGate(contractAddress: string, walletAddress: string, chainID?: string, _options?: Configuration): Observable<AssetGate> {
+        const requestContextPromise = this.requestFactory.getContractGate(contractAddress, walletAddress, chainID, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.getContractGate(rsp)));
+            }));
+    }
+
+    /**
      * Get tokens by contract address.
      * @param contractAddress A hex address for a blockchain contract.
      * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
@@ -299,6 +327,29 @@ export class ObservableDefaultApi {
     }
 
     /**
+     * Get autocomplete-style search suggestions for results.
+     * @param query A query or partial query that can be used to retrieve suggested results. For example \&quot;bored a\&quot; would return a suggestion for \&quot;bored ape.\&quot;
+     */
+    public getSuggestionsResults(query?: string, _options?: Configuration): Observable<Array<AutoSuggestion>> {
+        const requestContextPromise = this.requestFactory.getSuggestionsResults(query, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.getSuggestionsResults(rsp)));
+            }));
+    }
+
+    /**
      * Get a token by its contract address and token ID.
      * @param contractAddress A hex address for a blockchain contract.
      * @param tokenID An arbitrary ID defined by a contract to uniquely identify a cryptographic asset such as an NFT.
@@ -330,7 +381,7 @@ export class ObservableDefaultApi {
      * @param walletAddress A hex string referencing a public wallet address.
      * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
      */
-    public getTokenGate(tokenID: string, contractAddress: string, walletAddress: string, chainID?: string, _options?: Configuration): Observable<TokenGate> {
+    public getTokenGate(tokenID: string, contractAddress: string, walletAddress: string, chainID?: string, _options?: Configuration): Observable<AssetGate> {
         const requestContextPromise = this.requestFactory.getTokenGate(tokenID, contractAddress, walletAddress, chainID, _options);
 
         // build promise chain
@@ -505,9 +556,9 @@ export class ObservableDefaultApi {
      * @param cursor Cursor to support API pagination.
      * @param limit Limits the number of results in a single response.
      * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
-     * @param tokenType An indicator that be used to filter to only a subet of tokens, for example only NFTs.
+     * @param tokenType An indicator that be used to filter to only a subet of tokens, for example only NFTs. To select ERC-20, sidechain and L1 transactions, use the \&quot;fungible.\&quot; To select only NFTs or semi-fungible tokens (SFTs), use the respective enum.
      */
-    public getWalletTransactions(walletAddress: string, cursor?: string, limit?: number, chainID?: string, tokenType?: 'NFT' | 'SFT' | 'unknown', _options?: Configuration): Observable<Array<Transaction>> {
+    public getWalletTransactions(walletAddress: string, cursor?: string, limit?: number, chainID?: string, tokenType?: 'native' | 'fungible' | 'NFT' | 'SFT' | 'unknown', _options?: Configuration): Observable<Array<Transaction>> {
         const requestContextPromise = this.requestFactory.getWalletTransactions(walletAddress, cursor, limit, chainID, tokenType, _options);
 
         // build promise chain

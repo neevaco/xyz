@@ -101,6 +101,44 @@ export type AuthMethodsConfiguration = {
     "apikey"?: ApiKeyConfiguration;
 };
 export function configureAuthMethods(config: AuthMethodsConfiguration | undefined): AuthMethods;
+export class AssetGate {
+    'hasContract': boolean;
+    'hasToken': boolean;
+    static readonly discriminator: string | undefined;
+    static readonly attributeTypeMap: Array<{
+        name: string;
+        baseName: string;
+        type: string;
+        format: string;
+    }>;
+    static getAttributeTypeMap(): {
+        name: string;
+        baseName: string;
+        type: string;
+        format: string;
+    }[];
+    constructor();
+}
+export class AutoSuggestion {
+    'query'?: string;
+    'title'?: string;
+    'type'?: AutoSuggestionTypeEnum;
+    static readonly discriminator: string | undefined;
+    static readonly attributeTypeMap: Array<{
+        name: string;
+        baseName: string;
+        type: string;
+        format: string;
+    }>;
+    static getAttributeTypeMap(): {
+        name: string;
+        baseName: string;
+        type: string;
+        format: string;
+    }[];
+    constructor();
+}
+export type AutoSuggestionTypeEnum = "query" | "collection" | "wallet" | "token";
 export class BlockchainInfo {
     'chainID'?: string;
     'name'?: string;
@@ -276,6 +314,25 @@ export class Collection {
     }[];
     constructor();
 }
+export class CreditEvent {
+    'event'?: CreditEventEventEnum;
+    'protocol'?: string;
+    static readonly discriminator: string | undefined;
+    static readonly attributeTypeMap: Array<{
+        name: string;
+        baseName: string;
+        type: string;
+        format: string;
+    }>;
+    static getAttributeTypeMap(): {
+        name: string;
+        baseName: string;
+        type: string;
+        format: string;
+    }[];
+    constructor();
+}
+export type CreditEventEventEnum = "Supply" | "Withdraw" | "Borrow" | "Repay" | "Accrue Interest" | "Flash Loan";
 export class ENS {
     'expires'?: Date;
     'isPrimary'?: boolean;
@@ -313,6 +370,25 @@ export class ErrorMessage {
     }[];
     constructor();
 }
+export class ExchangeEvent {
+    'event'?: ExchangeEventEventEnum;
+    'protocol'?: string;
+    static readonly discriminator: string | undefined;
+    static readonly attributeTypeMap: Array<{
+        name: string;
+        baseName: string;
+        type: string;
+        format: string;
+    }>;
+    static getAttributeTypeMap(): {
+        name: string;
+        baseName: string;
+        type: string;
+        format: string;
+    }[];
+    constructor();
+}
+export type ExchangeEventEventEnum = "Swap" | "Mint" | "Burn" | "Collect Fees" | "Create Pool";
 export class TokenAttribute {
     'traitType'?: string;
     'value'?: string;
@@ -358,6 +434,8 @@ export class Transaction {
     'gasFee'?: CurrencyInfo;
     'logLine'?: Array<TransactionLogLine>;
     'timestamp'?: Date;
+    'tokenID'?: string;
+    'transactionHash'?: string;
     'transactionIndex'?: number;
     static readonly discriminator: string | undefined;
     static readonly attributeTypeMap: Array<{
@@ -529,23 +607,6 @@ export class TokenEvents {
     }[];
     constructor();
 }
-export class TokenGate {
-    'hasToken': boolean;
-    static readonly discriminator: string | undefined;
-    static readonly attributeTypeMap: Array<{
-        name: string;
-        baseName: string;
-        type: string;
-        format: string;
-    }>;
-    static getAttributeTypeMap(): {
-        name: string;
-        baseName: string;
-        type: string;
-        format: string;
-    }[];
-    constructor();
-}
 interface Middleware {
     pre(context: RequestContext): Observable<RequestContext>;
     post(context: ResponseContext): Observable<ResponseContext>;
@@ -615,11 +676,13 @@ declare class AlphaApiResponseProcessor {
 declare class DefaultApiRequestFactory extends BaseAPIRequestFactory {
     getBlockchains(_options?: Configuration): Promise<RequestContext>;
     getCollection(contractAddress: string, chainID?: string, _options?: Configuration): Promise<RequestContext>;
+    getContractGate(contractAddress: string, walletAddress: string, chainID?: string, _options?: Configuration): Promise<RequestContext>;
     getContractTokens(contractAddress: string, chainID?: string, limit?: number, _options?: Configuration): Promise<RequestContext>;
     getContractTokensByContractAndID(contractAddresses: string, tokenIdentifiers: string, chainID?: string, limit?: number, _options?: Configuration): Promise<RequestContext>;
     getContractTransactionHistory(contractAddress: string, cursor?: string, chainID?: string, limit?: number, _options?: Configuration): Promise<RequestContext>;
     getSearchResults(query: string, cursor?: string, _options?: Configuration): Promise<RequestContext>;
     getSoldTokens(walletAddress: string, chainID?: string, cursor?: string, limit?: number, _options?: Configuration): Promise<RequestContext>;
+    getSuggestionsResults(query?: string, _options?: Configuration): Promise<RequestContext>;
     getToken(contractAddress: string, tokenID: string, chainID?: string, _options?: Configuration): Promise<RequestContext>;
     getTokenGate(tokenID: string, contractAddress: string, walletAddress: string, chainID?: string, _options?: Configuration): Promise<RequestContext>;
     getTokenTransfers(contractAddress: string, tokenID: string, chainID?: string, limit?: number, _options?: Configuration): Promise<RequestContext>;
@@ -628,18 +691,20 @@ declare class DefaultApiRequestFactory extends BaseAPIRequestFactory {
     getWalletBalances(walletAddress: string, limit?: number, _options?: Configuration): Promise<RequestContext>;
     getWalletMints(walletAddress: string, chainID?: string, cursor?: string, limit?: number, _options?: Configuration): Promise<RequestContext>;
     getWalletTokens(walletAddress: string, cursor?: string, chainID?: string, limit?: number, _options?: Configuration): Promise<RequestContext>;
-    getWalletTransactions(walletAddress: string, cursor?: string, limit?: number, chainID?: string, tokenType?: 'NFT' | 'SFT' | 'unknown', _options?: Configuration): Promise<RequestContext>;
+    getWalletTransactions(walletAddress: string, cursor?: string, limit?: number, chainID?: string, tokenType?: 'native' | 'fungible' | 'NFT' | 'SFT' | 'unknown', _options?: Configuration): Promise<RequestContext>;
 }
 declare class DefaultApiResponseProcessor {
     getBlockchains(response: ResponseContext): Promise<Array<BlockchainInfo>>;
     getCollection(response: ResponseContext): Promise<Array<Collection>>;
+    getContractGate(response: ResponseContext): Promise<AssetGate>;
     getContractTokens(response: ResponseContext): Promise<Array<Token>>;
     getContractTokensByContractAndID(response: ResponseContext): Promise<Array<Token>>;
     getContractTransactionHistory(response: ResponseContext): Promise<Array<Transaction>>;
     getSearchResults(response: ResponseContext): Promise<Array<SearchDocument>>;
     getSoldTokens(response: ResponseContext): Promise<Array<Token>>;
+    getSuggestionsResults(response: ResponseContext): Promise<Array<AutoSuggestion>>;
     getToken(response: ResponseContext): Promise<Array<Token>>;
-    getTokenGate(response: ResponseContext): Promise<TokenGate>;
+    getTokenGate(response: ResponseContext): Promise<AssetGate>;
     getTokenTransfers(response: ResponseContext): Promise<TokenEvents>;
     getTokensBySearchQuery(response: ResponseContext): Promise<Array<Token>>;
     getWallet(response: ResponseContext): Promise<Array<Wallet>>;
@@ -658,20 +723,22 @@ export class DefaultApi {
     constructor(configuration: Configuration, requestFactory?: DefaultApiRequestFactory, responseProcessor?: DefaultApiResponseProcessor);
     getBlockchains(_options?: Configuration): Promise<Array<BlockchainInfo>>;
     getCollection(contractAddress: string, chainID?: string, _options?: Configuration): Promise<Array<Collection>>;
+    getContractGate(contractAddress: string, walletAddress: string, chainID?: string, _options?: Configuration): Promise<AssetGate>;
     getContractTokens(contractAddress: string, chainID?: string, limit?: number, _options?: Configuration): Promise<Array<Token>>;
     getContractTokensByContractAndID(contractAddresses: string, tokenIdentifiers: string, chainID?: string, limit?: number, _options?: Configuration): Promise<Array<Token>>;
     getContractTransactionHistory(contractAddress: string, cursor?: string, chainID?: string, limit?: number, _options?: Configuration): Promise<Array<Transaction>>;
     getSearchResults(query: string, cursor?: string, _options?: Configuration): Promise<Array<SearchDocument>>;
     getSoldTokens(walletAddress: string, chainID?: string, cursor?: string, limit?: number, _options?: Configuration): Promise<Array<Token>>;
+    getSuggestionsResults(query?: string, _options?: Configuration): Promise<Array<AutoSuggestion>>;
     getToken(contractAddress: string, tokenID: string, chainID?: string, _options?: Configuration): Promise<Array<Token>>;
-    getTokenGate(tokenID: string, contractAddress: string, walletAddress: string, chainID?: string, _options?: Configuration): Promise<TokenGate>;
+    getTokenGate(tokenID: string, contractAddress: string, walletAddress: string, chainID?: string, _options?: Configuration): Promise<AssetGate>;
     getTokenTransfers(contractAddress: string, tokenID: string, chainID?: string, limit?: number, _options?: Configuration): Promise<TokenEvents>;
     getTokensBySearchQuery(query: string, cursor?: string, _options?: Configuration): Promise<Array<Token>>;
     getWallet(walletAddress: string, chainID?: string, _options?: Configuration): Promise<Array<Wallet>>;
     getWalletBalances(walletAddress: string, limit?: number, _options?: Configuration): Promise<Array<CurrencyInfo>>;
     getWalletMints(walletAddress: string, chainID?: string, cursor?: string, limit?: number, _options?: Configuration): Promise<Array<Token>>;
     getWalletTokens(walletAddress: string, cursor?: string, chainID?: string, limit?: number, _options?: Configuration): Promise<Array<Token>>;
-    getWalletTransactions(walletAddress: string, cursor?: string, limit?: number, chainID?: string, tokenType?: 'NFT' | 'SFT' | 'unknown', _options?: Configuration): Promise<Array<Transaction>>;
+    getWalletTransactions(walletAddress: string, cursor?: string, limit?: number, chainID?: string, tokenType?: 'native' | 'fungible' | 'NFT' | 'SFT' | 'unknown', _options?: Configuration): Promise<Array<Transaction>>;
 }
 
 //# sourceMappingURL=index.d.ts.map

@@ -1,6 +1,6 @@
 {
   "name": "@nxyzinc/xyzapi",
-  "version": "0.10.1",
+  "version": "0.11.0",
   "description": "SDK and Typescript type definitions for nxyz API",
   "repository": {
     "type": "git",

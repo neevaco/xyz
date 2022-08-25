@@ -8,6 +8,8 @@ import {canConsumeForm, isCodeInRange} from '../util';
 import {SecurityAuthentication} from '../auth/auth';
 
 
+import { AssetGate } from '../models/AssetGate';
+import { AutoSuggestion } from '../models/AutoSuggestion';
 import { BlockchainInfo } from '../models/BlockchainInfo';
 import { Collection } from '../models/Collection';
 import { CurrencyInfo } from '../models/CurrencyInfo';
@@ -15,7 +17,6 @@ import { ErrorMessage } from '../models/ErrorMessage';
 import { SearchDocument } from '../models/SearchDocument';
 import { Token } from '../models/Token';
 import { TokenEvents } from '../models/TokenEvents';
-import { TokenGate } from '../models/TokenGate';
 import { Transaction } from '../models/Transaction';
 import { Wallet } from '../models/Wallet';
 
@@ -71,6 +72,58 @@ export class DefaultApiRequestFactory extends BaseAPIRequestFactory {
         // Path Params
         const localVarPath = '/api/v1/collections/{contractAddress}'
             .replace('{' + 'contractAddress' + '}', encodeURIComponent(String(contractAddress)));
+
+        // Make Request Context
+        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
+        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
+
+        // Query Params
+        if (chainID !== undefined) {
+            requestContext.setQueryParam("chainID", ObjectSerializer.serialize(chainID, "string", ""));
+        }
+
+
+        let authMethod: SecurityAuthentication | undefined;
+        // Apply auth methods
+        authMethod = _config.authMethods["apikey"]
+        if (authMethod?.applySecurityAuthentication) {
+            await authMethod?.applySecurityAuthentication(requestContext);
+        }
+        
+        const defaultAuth: SecurityAuthentication | undefined = _options?.authMethods?.default || this.configuration?.authMethods?.default
+        if (defaultAuth?.applySecurityAuthentication) {
+            await defaultAuth?.applySecurityAuthentication(requestContext);
+        }
+
+        return requestContext;
+    }
+
+    /**
+     * Determine if a wallet has any token from a contract.
+     * @param contractAddress A hex address for a blockchain contract.
+     * @param walletAddress A hex string referencing a public wallet address.
+     * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
+     */
+    public async getContractGate(contractAddress: string, walletAddress: string, chainID?: string, _options?: Configuration): Promise<RequestContext> {
+        let _config = _options || this.configuration;
+
+        // verify required parameter 'contractAddress' is not null or undefined
+        if (contractAddress === null || contractAddress === undefined) {
+            throw new RequiredError("DefaultApi", "getContractGate", "contractAddress");
+        }
+
+
+        // verify required parameter 'walletAddress' is not null or undefined
+        if (walletAddress === null || walletAddress === undefined) {
+            throw new RequiredError("DefaultApi", "getContractGate", "walletAddress");
+        }
+
+
+
+        // Path Params
+        const localVarPath = '/api/v1/wallets/{walletAddress}/gate/{contractAddress}'
+            .replace('{' + 'contractAddress' + '}', encodeURIComponent(String(contractAddress)))
+            .replace('{' + 'walletAddress' + '}', encodeURIComponent(String(walletAddress)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -357,6 +410,42 @@ export class DefaultApiRequestFactory extends BaseAPIRequestFactory {
         // Query Params
         if (limit !== undefined) {
             requestContext.setQueryParam("limit", ObjectSerializer.serialize(limit, "number", ""));
+        }
+
+
+        let authMethod: SecurityAuthentication | undefined;
+        // Apply auth methods
+        authMethod = _config.authMethods["apikey"]
+        if (authMethod?.applySecurityAuthentication) {
+            await authMethod?.applySecurityAuthentication(requestContext);
+        }
+        
+        const defaultAuth: SecurityAuthentication | undefined = _options?.authMethods?.default || this.configuration?.authMethods?.default
+        if (defaultAuth?.applySecurityAuthentication) {
+            await defaultAuth?.applySecurityAuthentication(requestContext);
+        }
+
+        return requestContext;
+    }
+
+    /**
+     * Get autocomplete-style search suggestions for results.
+     * @param query A query or partial query that can be used to retrieve suggested results. For example \&quot;bored a\&quot; would return a suggestion for \&quot;bored ape.\&quot;
+     */
+    public async getSuggestionsResults(query?: string, _options?: Configuration): Promise<RequestContext> {
+        let _config = _options || this.configuration;
+
+
+        // Path Params
+        const localVarPath = '/api/v1/suggestions';
+
+        // Make Request Context
+        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
+        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
+
+        // Query Params
+        if (query !== undefined) {
+            requestContext.setQueryParam("query", ObjectSerializer.serialize(query, "string", ""));
         }
 
 
@@ -800,9 +889,9 @@ export class DefaultApiRequestFactory extends BaseAPIRequestFactory {
      * @param cursor Cursor to support API pagination.
      * @param limit Limits the number of results in a single response.
      * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
-     * @param tokenType An indicator that be used to filter to only a subet of tokens, for example only NFTs.
+     * @param tokenType An indicator that be used to filter to only a subet of tokens, for example only NFTs. To select ERC-20, sidechain and L1 transactions, use the \&quot;fungible.\&quot; To select only NFTs or semi-fungible tokens (SFTs), use the respective enum.
      */
-    public async getWalletTransactions(walletAddress: string, cursor?: string, limit?: number, chainID?: string, tokenType?: 'NFT' | 'SFT' | 'unknown', _options?: Configuration): Promise<RequestContext> {
+    public async getWalletTransactions(walletAddress: string, cursor?: string, limit?: number, chainID?: string, tokenType?: 'native' | 'fungible' | 'NFT' | 'SFT' | 'unknown', _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'walletAddress' is not null or undefined
@@ -840,7 +929,7 @@ export class DefaultApiRequestFactory extends BaseAPIRequestFactory {
 
         // Query Params
         if (tokenType !== undefined) {
-            requestContext.setQueryParam("tokenType", ObjectSerializer.serialize(tokenType, "'NFT' | 'SFT' | 'unknown'", ""));
+            requestContext.setQueryParam("tokenType", ObjectSerializer.serialize(tokenType, "'native' | 'fungible' | 'NFT' | 'SFT' | 'unknown'", ""));
         }
 
 
@@ -929,6 +1018,42 @@ export class DefaultApiResponseProcessor {
                 ObjectSerializer.parse(await response.body.text(), contentType),
                 "Array<Collection>", ""
             ) as Array<Collection>;
+            return body;
+        }
+
+        throw new ApiException<string | Blob | undefined>(response.httpStatusCode, "Unknown API Status Code!", await response.getBodyAsAny(), response.headers);
+    }
+
+    /**
+     * Unwraps the actual response sent by the server from the response context and deserializes the response content
+     * to the expected objects
+     *
+     * @params response Response returned by the server for a request to getContractGate
+     * @throws ApiException if the response code was not in [200, 299]
+     */
+     public async getContractGate(response: ResponseContext): Promise<AssetGate > {
+        const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
+        if (isCodeInRange("200", response.httpStatusCode)) {
+            const body: AssetGate = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "AssetGate", ""
+            ) as AssetGate;
+            return body;
+        }
+        if (isCodeInRange("0", response.httpStatusCode)) {
+            const body: ErrorMessage = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "ErrorMessage", ""
+            ) as ErrorMessage;
+            throw new ApiException<ErrorMessage>(response.httpStatusCode, "An error message for unexpected requests.", body, response.headers);
+        }
+
+        // Work around for missing responses in specification, e.g. for petstore.yaml
+        if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
+            const body: AssetGate = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "AssetGate", ""
+            ) as AssetGate;
             return body;
         }
 
@@ -1119,6 +1244,42 @@ export class DefaultApiResponseProcessor {
      * Unwraps the actual response sent by the server from the response context and deserializes the response content
      * to the expected objects
      *
+     * @params response Response returned by the server for a request to getSuggestionsResults
+     * @throws ApiException if the response code was not in [200, 299]
+     */
+     public async getSuggestionsResults(response: ResponseContext): Promise<Array<AutoSuggestion> > {
+        const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
+        if (isCodeInRange("200", response.httpStatusCode)) {
+            const body: Array<AutoSuggestion> = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "Array<AutoSuggestion>", ""
+            ) as Array<AutoSuggestion>;
+            return body;
+        }
+        if (isCodeInRange("0", response.httpStatusCode)) {
+            const body: ErrorMessage = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "ErrorMessage", ""
+            ) as ErrorMessage;
+            throw new ApiException<ErrorMessage>(response.httpStatusCode, "An error message for unexpected requests.", body, response.headers);
+        }
+
+        // Work around for missing responses in specification, e.g. for petstore.yaml
+        if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
+            const body: Array<AutoSuggestion> = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "Array<AutoSuggestion>", ""
+            ) as Array<AutoSuggestion>;
+            return body;
+        }
+
+        throw new ApiException<string | Blob | undefined>(response.httpStatusCode, "Unknown API Status Code!", await response.getBodyAsAny(), response.headers);
+    }
+
+    /**
+     * Unwraps the actual response sent by the server from the response context and deserializes the response content
+     * to the expected objects
+     *
      * @params response Response returned by the server for a request to getToken
      * @throws ApiException if the response code was not in [200, 299]
      */
@@ -1158,13 +1319,13 @@ export class DefaultApiResponseProcessor {
      * @params response Response returned by the server for a request to getTokenGate
      * @throws ApiException if the response code was not in [200, 299]
      */
-     public async getTokenGate(response: ResponseContext): Promise<TokenGate > {
+     public async getTokenGate(response: ResponseContext): Promise<AssetGate > {
         const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
         if (isCodeInRange("200", response.httpStatusCode)) {
-            const body: TokenGate = ObjectSerializer.deserialize(
+            const body: AssetGate = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "TokenGate", ""
-            ) as TokenGate;
+                "AssetGate", ""
+            ) as AssetGate;
             return body;
         }
         if (isCodeInRange("0", response.httpStatusCode)) {
@@ -1177,10 +1338,10 @@ export class DefaultApiResponseProcessor {
 
         // Work around for missing responses in specification, e.g. for petstore.yaml
         if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
-            const body: TokenGate = ObjectSerializer.deserialize(
+            const body: AssetGate = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "TokenGate", ""
-            ) as TokenGate;
+                "AssetGate", ""
+            ) as AssetGate;
             return body;
         }
 

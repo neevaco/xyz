@@ -12,34 +12,40 @@
 
 import { HttpFile } from '../http/http';
 
-export class URL {
+export class CreditEvent {
     /**
-    * Human-readable name of the site.
+    * Human-readable, machine parsable, event descriptions for credit-related contract events
     */
-    'name'?: string;
-    'url'?: string;
+    'event'?: CreditEventEventEnum;
+    /**
+    * Brand or identifier closely associated with a contract
+    */
+    'protocol'?: string;
 
     static readonly discriminator: string | undefined = undefined;
 
     static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
         {
-            "name": "name",
-            "baseName": "name",
-            "type": "string",
+            "name": "event",
+            "baseName": "event",
+            "type": "CreditEventEventEnum",
             "format": ""
         },
         {
-            "name": "url",
-            "baseName": "url",
+            "name": "protocol",
+            "baseName": "protocol",
             "type": "string",
             "format": ""
         }    ];
 
     static getAttributeTypeMap() {
-        return URL.attributeTypeMap;
+        return CreditEvent.attributeTypeMap;
     }
 
     public constructor() {
     }
 }
+
+
+export type CreditEventEventEnum = "Supply" | "Withdraw" | "Borrow" | "Repay" | "Accrue Interest" | "Flash Loan" ;
 

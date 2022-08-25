@@ -12,34 +12,40 @@
 
 import { HttpFile } from '../http/http';
 
-export class URL {
+export class ExchangeEvent {
     /**
-    * Human-readable name of the site.
+    * Human-readable, machine parsable, event descriptions for token exchange-related contract events
     */
-    'name'?: string;
-    'url'?: string;
+    'event'?: ExchangeEventEventEnum;
+    /**
+    * Brand or identifier closely associated with a contract
+    */
+    'protocol'?: string;
 
     static readonly discriminator: string | undefined = undefined;
 
     static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
         {
-            "name": "name",
-            "baseName": "name",
-            "type": "string",
+            "name": "event",
+            "baseName": "event",
+            "type": "ExchangeEventEventEnum",
             "format": ""
         },
         {
-            "name": "url",
-            "baseName": "url",
+            "name": "protocol",
+            "baseName": "protocol",
             "type": "string",
             "format": ""
         }    ];
 
     static getAttributeTypeMap() {
-        return URL.attributeTypeMap;
+        return ExchangeEvent.attributeTypeMap;
     }
 
     public constructor() {
     }
 }
+
+
+export type ExchangeEventEventEnum = "Swap" | "Mint" | "Burn" | "Collect Fees" | "Create Pool" ;
 

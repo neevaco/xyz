@@ -10,44 +10,52 @@
  * Do not edit the class manually.
  */
 
-import { MediaVersion } from './MediaVersion';
 import { HttpFile } from '../http/http';
 
-export class Media {
+export class AutoSuggestion {
     /**
-    * URI for the image asset.
+    * A URL-encoded string that can be used in conjunction with the search endpoint
     */
-    'URI'?: string;
-    'key': string;
-    'version'?: Array<MediaVersion>;
+    'query'?: string;
+    /**
+    * The suggestion result's title fully spelled out
+    */
+    'title'?: string;
+    /**
+    * The type of result the suggestion is based on, e.g. Bored Ape Yacht Club would be a collection.
+    */
+    'type'?: AutoSuggestionTypeEnum;
 
     static readonly discriminator: string | undefined = undefined;
 
     static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
         {
-            "name": "URI",
-            "baseName": "URI",
+            "name": "query",
+            "baseName": "query",
             "type": "string",
             "format": ""
         },
         {
-            "name": "key",
-            "baseName": "key",
+            "name": "title",
+            "baseName": "title",
             "type": "string",
             "format": ""
         },
         {
-            "name": "version",
-            "baseName": "version",
-            "type": "Array<MediaVersion>",
+            "name": "type",
+            "baseName": "type",
+            "type": "AutoSuggestionTypeEnum",
             "format": ""
         }    ];
 
     static getAttributeTypeMap() {
-        return Media.attributeTypeMap;
+        return AutoSuggestion.attributeTypeMap;
     }
 
     public constructor() {
     }
 }
+
+
+export type AutoSuggestionTypeEnum = "query" | "collection" | "wallet" | "token" ;
 
