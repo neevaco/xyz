@@ -1,8 +1,12 @@
+export * from './AssetGate';
+export * from './AutoSuggestion';
 export * from './BlockchainInfo';
 export * from './Collection';
+export * from './CreditEvent';
 export * from './CurrencyInfo';
 export * from './ENS';
 export * from './ErrorMessage';
+export * from './ExchangeEvent';
 export * from './Media';
 export * from './MediaPreview';
 export * from './MediaVersion';
@@ -14,17 +18,20 @@ export * from './SocialMedia';
 export * from './Token';
 export * from './TokenAttribute';
 export * from './TokenEvents';
-export * from './TokenGate';
 export * from './Transaction';
 export * from './TransactionLogLine';
 export * from './URL';
 export * from './Wallet';
 
+import { AssetGate } from './AssetGate';
+import { AutoSuggestion  , AutoSuggestionTypeEnum   } from './AutoSuggestion';
 import { BlockchainInfo } from './BlockchainInfo';
 import { Collection } from './Collection';
+import { CreditEvent, CreditEventEventEnum    } from './CreditEvent';
 import { CurrencyInfo } from './CurrencyInfo';
 import { ENS } from './ENS';
 import { ErrorMessage } from './ErrorMessage';
+import { ExchangeEvent, ExchangeEventEventEnum    } from './ExchangeEvent';
 import { Media } from './Media';
 import { MediaPreview    , MediaPreviewKindEnum    } from './MediaPreview';
 import { MediaVersion   , MediaVersionKindEnum     } from './MediaVersion';
@@ -36,7 +43,6 @@ import { SocialMedia } from './SocialMedia';
 import { Token } from './Token';
 import { TokenAttribute } from './TokenAttribute';
 import { TokenEvents } from './TokenEvents';
-import { TokenGate } from './TokenGate';
 import { Transaction } from './Transaction';
 import { TransactionLogLine } from './TransactionLogLine';
 import { URL } from './URL';
@@ -62,6 +68,9 @@ const supportedMediaTypes: { [mediaType: string]: number } = {
 
 
 let enumsMap: Set<string> = new Set<string>([
+    "AutoSuggestionTypeEnum",
+    "CreditEventEventEnum",
+    "ExchangeEventEventEnum",
     "MediaPreviewKindEnum",
     "MediaVersionKindEnum",
     "NonFungibleTokenDurabilityEnum",
@@ -69,11 +78,15 @@ let enumsMap: Set<string> = new Set<string>([
 ]);
 
 let typeMap: {[index: string]: any} = {
+    "AssetGate": AssetGate,
+    "AutoSuggestion": AutoSuggestion,
     "BlockchainInfo": BlockchainInfo,
     "Collection": Collection,
+    "CreditEvent": CreditEvent,
     "CurrencyInfo": CurrencyInfo,
     "ENS": ENS,
     "ErrorMessage": ErrorMessage,
+    "ExchangeEvent": ExchangeEvent,
     "Media": Media,
     "MediaPreview": MediaPreview,
     "MediaVersion": MediaVersion,
@@ -85,7 +98,6 @@ let typeMap: {[index: string]: any} = {
     "Token": Token,
     "TokenAttribute": TokenAttribute,
     "TokenEvents": TokenEvents,
-    "TokenGate": TokenGate,
     "Transaction": Transaction,
     "TransactionLogLine": TransactionLogLine,
     "URL": URL,

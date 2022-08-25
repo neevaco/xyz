@@ -2,11 +2,15 @@ import { ResponseContext, RequestContext, HttpFile } from '../http/http';
 import * as models from '../models/all';
 import { Configuration} from '../configuration'
 
+import { AssetGate } from '../models/AssetGate';
+import { AutoSuggestion } from '../models/AutoSuggestion';
 import { BlockchainInfo } from '../models/BlockchainInfo';
 import { Collection } from '../models/Collection';
+import { CreditEvent } from '../models/CreditEvent';
 import { CurrencyInfo } from '../models/CurrencyInfo';
 import { ENS } from '../models/ENS';
 import { ErrorMessage } from '../models/ErrorMessage';
+import { ExchangeEvent } from '../models/ExchangeEvent';
 import { Media } from '../models/Media';
 import { MediaPreview } from '../models/MediaPreview';
 import { MediaVersion } from '../models/MediaVersion';
@@ -18,7 +22,6 @@ import { SocialMedia } from '../models/SocialMedia';
 import { Token } from '../models/Token';
 import { TokenAttribute } from '../models/TokenAttribute';
 import { TokenEvents } from '../models/TokenEvents';
-import { TokenGate } from '../models/TokenGate';
 import { Transaction } from '../models/Transaction';
 import { TransactionLogLine } from '../models/TransactionLogLine';
 import { URL } from '../models/URL';
@@ -86,6 +89,27 @@ export interface DefaultApiGetCollectionRequest {
      * An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
      * @type string
      * @memberof DefaultApigetCollection
+     */
+    chainID?: string
+}
+
+export interface DefaultApiGetContractGateRequest {
+    /**
+     * A hex address for a blockchain contract.
+     * @type string
+     * @memberof DefaultApigetContractGate
+     */
+    contractAddress: string
+    /**
+     * A hex string referencing a public wallet address.
+     * @type string
+     * @memberof DefaultApigetContractGate
+     */
+    walletAddress: string
+    /**
+     * An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
+     * @type string
+     * @memberof DefaultApigetContractGate
      */
     chainID?: string
 }
@@ -205,6 +229,15 @@ export interface DefaultApiGetSoldTokensRequest {
      * @memberof DefaultApigetSoldTokens
      */
     limit?: number
+}
+
+export interface DefaultApiGetSuggestionsResultsRequest {
+    /**
+     * A query or partial query that can be used to retrieve suggested results. For example \&quot;bored a\&quot; would return a suggestion for \&quot;bored ape.\&quot;
+     * @type string
+     * @memberof DefaultApigetSuggestionsResults
+     */
+    query?: string
 }
 
 export interface DefaultApiGetTokenRequest {
@@ -407,11 +440,11 @@ export interface DefaultApiGetWalletTransactionsRequest {
      */
     chainID?: string
     /**
-     * An indicator that be used to filter to only a subet of tokens, for example only NFTs.
-     * @type &#39;NFT&#39; | &#39;SFT&#39; | &#39;unknown&#39;
+     * An indicator that be used to filter to only a subet of tokens, for example only NFTs. To select ERC-20, sidechain and L1 transactions, use the \&quot;fungible.\&quot; To select only NFTs or semi-fungible tokens (SFTs), use the respective enum.
+     * @type &#39;native&#39; | &#39;fungible&#39; | &#39;NFT&#39; | &#39;SFT&#39; | &#39;unknown&#39;
      * @memberof DefaultApigetWalletTransactions
      */
-    tokenType?: 'NFT' | 'SFT' | 'unknown'
+    tokenType?: 'native' | 'fungible' | 'NFT' | 'SFT' | 'unknown'
 }
 
 export class ObjectDefaultApi {
@@ -435,6 +468,14 @@ export class ObjectDefaultApi {
      */
     public getCollection(param: DefaultApiGetCollectionRequest, options?: Configuration): Promise<Array<Collection>> {
         return this.api.getCollection(param.contractAddress, param.chainID,  options).toPromise();
+    }
+
+    /**
+     * Determine if a wallet has any token from a contract.
+     * @param param the request object
+     */
+    public getContractGate(param: DefaultApiGetContractGateRequest, options?: Configuration): Promise<AssetGate> {
+        return this.api.getContractGate(param.contractAddress, param.walletAddress, param.chainID,  options).toPromise();
     }
 
     /**
@@ -478,6 +519,14 @@ export class ObjectDefaultApi {
     }
 
     /**
+     * Get autocomplete-style search suggestions for results.
+     * @param param the request object
+     */
+    public getSuggestionsResults(param: DefaultApiGetSuggestionsResultsRequest = {}, options?: Configuration): Promise<Array<AutoSuggestion>> {
+        return this.api.getSuggestionsResults(param.query,  options).toPromise();
+    }
+
+    /**
      * Get a token by its contract address and token ID.
      * @param param the request object
      */
@@ -489,7 +538,7 @@ export class ObjectDefaultApi {
      * Determine if a wallet has a given token from a contract.
      * @param param the request object
      */
-    public getTokenGate(param: DefaultApiGetTokenGateRequest, options?: Configuration): Promise<TokenGate> {
+    public getTokenGate(param: DefaultApiGetTokenGateRequest, options?: Configuration): Promise<AssetGate> {
         return this.api.getTokenGate(param.tokenID, param.contractAddress, param.walletAddress, param.chainID,  options).toPromise();
     }
 

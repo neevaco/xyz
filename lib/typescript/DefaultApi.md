@@ -6,11 +6,13 @@ Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**getBlockchains**](DefaultApi.md#getBlockchains) | **GET** /api/v1/blockchains | Lists all supported blockchains.
 [**getCollection**](DefaultApi.md#getCollection) | **GET** /api/v1/collections/{contractAddress} | Get a collection by its contract address.
+[**getContractGate**](DefaultApi.md#getContractGate) | **GET** /api/v1/wallets/{walletAddress}/gate/{contractAddress} | Determine if a wallet has any token from a contract.
 [**getContractTokens**](DefaultApi.md#getContractTokens) | **GET** /api/v1/tokens/{contractAddress} | Get tokens by contract address.
 [**getContractTokensByContractAndID**](DefaultApi.md#getContractTokensByContractAndID) | **GET** /api/v1/token-batch | Returns tokens from a batch lookup.
 [**getContractTransactionHistory**](DefaultApi.md#getContractTransactionHistory) | **GET** /api/v1/collections/{contractAddress}/transactions/history | Get the transaction history for a collection
 [**getSearchResults**](DefaultApi.md#getSearchResults) | **GET** /api/v1/search/{query} | Get search results such as wallets, tokens, and collections by a search query.
 [**getSoldTokens**](DefaultApi.md#getSoldTokens) | **GET** /api/v1/wallets/{walletAddress}/sold-tokens | Returns a list of tokens sold by a wallet.
+[**getSuggestionsResults**](DefaultApi.md#getSuggestionsResults) | **GET** /api/v1/suggestions | Get autocomplete-style search suggestions for results.
 [**getToken**](DefaultApi.md#getToken) | **GET** /api/v1/tokens/{contractAddress}/{tokenID} | Get a token by its contract address and token ID.
 [**getTokenGate**](DefaultApi.md#getTokenGate) | **GET** /api/v1/wallets/{walletAddress}/gate/{contractAddress}/{tokenID} | Determine if a wallet has a given token from a contract.
 [**getTokenTransfers**](DefaultApi.md#getTokenTransfers) | **GET** /api/v1/tokens/{contractAddress}/{tokenID}/transfers | Returns a list of transfer transactions on a specified token.
@@ -127,6 +129,66 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
+# **getContractGate**
+> AssetGate getContractGate()
+
+
+### Example
+
+
+```typescript
+import {  } from '';
+import * as fs from 'fs';
+
+const configuration = .createConfiguration();
+const apiInstance = new .DefaultApi(configuration);
+
+let body:.DefaultApiGetContractGateRequest = {
+  // string | A hex address for a blockchain contract.
+  contractAddress: "0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270",
+  // string | A hex string referencing a public wallet address.
+  walletAddress: "0x3cd378c9b1cb5f147ebf1b2c2564118946ae4ba1",
+  // string | An identifier to restrict results to a given blockchain. Provide either a keyword such as \"ethereum\" or \"polygon\" to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers. (optional)
+  chainID: "eip155:1",
+};
+
+apiInstance.getContractGate(body).then((data:any) => {
+  console.log('API called successfully. Returned data: ' + data);
+}).catch((error:any) => console.error(error));
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **contractAddress** | [**string**] | A hex address for a blockchain contract. | defaults to undefined
+ **walletAddress** | [**string**] | A hex string referencing a public wallet address. | defaults to undefined
+ **chainID** | [**string**] | An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers. | (optional) defaults to 'ethereum'
+
+
+### Return type
+
+**AssetGate**
+
+### Authorization
+
+[apikey](README.md#apikey)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | A map indicating if the wallet has the given contract. |  -  |
+**0** | An error message for unexpected requests. |  * X-RateLimit-Limit -  <br>  * X-RateLimit-Remaining -  <br>  * X-RateLimit-Reset -  <br>  |
+
+[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
+
 # **getContractTokens**
 > Array<Token> getContractTokens()
 
@@ -182,7 +244,7 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | A list of tokens that belong to this contract. |  -  |
+**200** | A list of tokens that belong to this contract. |  * X-Doc-Next-Cursor -  <br>  * X-Doc-Next-Link -  <br>  * X-Doc-Start-Cursor -  <br>  |
 **0** | An error message for unexpected requests. |  * X-RateLimit-Limit -  <br>  * X-RateLimit-Remaining -  <br>  * X-RateLimit-Reset -  <br>  |
 
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
@@ -308,7 +370,7 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | A list with the transaction history for a collection |  -  |
+**200** | A list with the transaction history for a collection |  * X-Doc-Next-Cursor -  <br>  * X-Doc-Next-Link -  <br>  * X-Doc-Start-Cursor -  <br>  |
 **0** | An error message for unexpected requests. |  * X-RateLimit-Limit -  <br>  * X-RateLimit-Remaining -  <br>  * X-RateLimit-Reset -  <br>  |
 
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
@@ -365,7 +427,7 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | A list of tokens related to the search. |  -  |
+**200** | A list of tokens related to the search. |  * X-Doc-Next-Cursor -  <br>  * X-Doc-Next-Link -  <br>  * X-Doc-Start-Cursor -  <br>  |
 **0** | An error message for unexpected requests. |  * X-RateLimit-Limit -  <br>  * X-RateLimit-Remaining -  <br>  * X-RateLimit-Reset -  <br>  |
 
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
@@ -428,7 +490,61 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | A paginated list of tokens that were sold by the specified wallet. |  -  |
+**200** | A paginated list of tokens that were sold by the specified wallet. |  * X-Doc-Next-Cursor -  <br>  * X-Doc-Next-Link -  <br>  * X-Doc-Start-Cursor -  <br>  |
+**0** | An error message for unexpected requests. |  * X-RateLimit-Limit -  <br>  * X-RateLimit-Remaining -  <br>  * X-RateLimit-Reset -  <br>  |
+
+[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
+
+# **getSuggestionsResults**
+> Array<AutoSuggestion> getSuggestionsResults()
+
+
+### Example
+
+
+```typescript
+import {  } from '';
+import * as fs from 'fs';
+
+const configuration = .createConfiguration();
+const apiInstance = new .DefaultApi(configuration);
+
+let body:.DefaultApiGetSuggestionsResultsRequest = {
+  // string | A query or partial query that can be used to retrieve suggested results. For example \"bored a\" would return a suggestion for \"bored ape.\" (optional)
+  query: "bored ape",
+};
+
+apiInstance.getSuggestionsResults(body).then((data:any) => {
+  console.log('API called successfully. Returned data: ' + data);
+}).catch((error:any) => console.error(error));
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **query** | [**string**] | A query or partial query that can be used to retrieve suggested results. For example \&quot;bored a\&quot; would return a suggestion for \&quot;bored ape.\&quot; | (optional) defaults to undefined
+
+
+### Return type
+
+**Array<AutoSuggestion>**
+
+### Authorization
+
+[apikey](README.md#apikey)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Get autocomplete search suggestions for results such as wallets, tokens, and collections by a search query. |  -  |
 **0** | An error message for unexpected requests. |  * X-RateLimit-Limit -  <br>  * X-RateLimit-Remaining -  <br>  * X-RateLimit-Reset -  <br>  |
 
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
@@ -494,7 +610,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
 # **getTokenGate**
-> TokenGate getTokenGate()
+> AssetGate getTokenGate()
 
 
 ### Example
@@ -536,7 +652,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**TokenGate**
+**AssetGate**
 
 ### Authorization
 
@@ -551,7 +667,7 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | A boolean indicating if the wallet has a given token. |  -  |
+**200** | A map indicating if the wallet has the given contract and if the wallet has the given token. |  -  |
 **0** | An error message for unexpected requests. |  * X-RateLimit-Limit -  <br>  * X-RateLimit-Remaining -  <br>  * X-RateLimit-Reset -  <br>  |
 
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
@@ -614,7 +730,7 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | A token with transactions restricted to transfer events. |  -  |
+**200** | A token with transactions restricted to transfer events. |  * X-Doc-Next-Cursor -  <br>  * X-Doc-Next-Link -  <br>  * X-Doc-Start-Cursor -  <br>  |
 **0** | An error message for unexpected requests. |  * X-RateLimit-Limit -  <br>  * X-RateLimit-Remaining -  <br>  * X-RateLimit-Reset -  <br>  |
 
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
@@ -671,7 +787,7 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | A list of tokens that related to the search. |  -  |
+**200** | A list of tokens that related to the search. |  * X-Doc-Next-Cursor -  <br>  * X-Doc-Next-Link -  <br>  * X-Doc-Start-Cursor -  <br>  |
 **0** | An error message for unexpected requests. |  * X-RateLimit-Limit -  <br>  * X-RateLimit-Remaining -  <br>  * X-RateLimit-Reset -  <br>  |
 
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
@@ -785,7 +901,7 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | The balance of fungible tokens from smart contracts or blockchains. Certain non-standard ERC-20 tokens (e.g. stETH) may occasionally have stale balances, for example interest payments can be slow to update. |  -  |
+**200** | The balance of fungible tokens from smart contracts or blockchains. Certain non-standard ERC-20 tokens (e.g. stETH) may occasionally have stale balances, for example interest payments can be slow to update. The contract address for native tokens is the null contract address, 0x0000000000000000000000000000000000000000. |  -  |
 **0** | An error message for unexpected requests. |  * X-RateLimit-Limit -  <br>  * X-RateLimit-Remaining -  <br>  * X-RateLimit-Reset -  <br>  |
 
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
@@ -848,7 +964,7 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | A paginated list of tokens that were minted by the specified wallet. |  -  |
+**200** | A paginated list of tokens that were minted by the specified wallet. |  * X-Doc-Next-Cursor -  <br>  * X-Doc-Next-Link -  <br>  * X-Doc-Start-Cursor -  <br>  |
 **0** | An error message for unexpected requests. |  * X-RateLimit-Limit -  <br>  * X-RateLimit-Remaining -  <br>  * X-RateLimit-Reset -  <br>  |
 
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
@@ -911,7 +1027,7 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | A paginated list of tokens that are owned by the specified wallet. |  -  |
+**200** | A paginated list of tokens that are owned by the specified wallet. |  * X-Doc-Next-Cursor -  <br>  * X-Doc-Next-Link -  <br>  * X-Doc-Start-Cursor -  <br>  |
 **0** | An error message for unexpected requests. |  * X-RateLimit-Limit -  <br>  * X-RateLimit-Remaining -  <br>  * X-RateLimit-Reset -  <br>  |
 
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
@@ -939,7 +1055,7 @@ let body:.DefaultApiGetWalletTransactionsRequest = {
   limit: 25,
   // string | An identifier to restrict results to a given blockchain. Provide either a keyword such as \"ethereum\" or \"polygon\" to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers. (optional)
   chainID: "eip155:1",
-  // 'NFT' | 'SFT' | 'unknown' | An indicator that be used to filter to only a subet of tokens, for example only NFTs. (optional)
+  // 'native' | 'fungible' | 'NFT' | 'SFT' | 'unknown' | An indicator that be used to filter to only a subet of tokens, for example only NFTs. To select ERC-20, sidechain and L1 transactions, use the \"fungible.\" To select only NFTs or semi-fungible tokens (SFTs), use the respective enum. (optional)
   tokenType: "NFT",
 };
 
@@ -957,7 +1073,7 @@ Name | Type | Description  | Notes
  **cursor** | [**string**] | Cursor to support API pagination. | (optional) defaults to undefined
  **limit** | [**number**] | Limits the number of results in a single response. | (optional) defaults to 100
  **chainID** | [**string**] | An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers. | (optional) defaults to 'ethereum'
- **tokenType** | [**&#39;NFT&#39; | &#39;SFT&#39; | &#39;unknown&#39;**]**Array<&#39;NFT&#39; &#124; &#39;SFT&#39; &#124; &#39;unknown&#39;>** | An indicator that be used to filter to only a subet of tokens, for example only NFTs. | (optional) defaults to undefined
+ **tokenType** | [**&#39;native&#39; | &#39;fungible&#39; | &#39;NFT&#39; | &#39;SFT&#39; | &#39;unknown&#39;**]**Array<&#39;native&#39; &#124; &#39;fungible&#39; &#124; &#39;NFT&#39; &#124; &#39;SFT&#39; &#124; &#39;unknown&#39;>** | An indicator that be used to filter to only a subet of tokens, for example only NFTs. To select ERC-20, sidechain and L1 transactions, use the \&quot;fungible.\&quot; To select only NFTs or semi-fungible tokens (SFTs), use the respective enum. | (optional) defaults to undefined
 
 
 ### Return type
@@ -977,7 +1093,7 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | Returns a list of transactions that have been performed by this wallet. Use token type to restrict to only certain transactions, such as NFTs |  -  |
+**200** | Returns a list of transactions that have been performed by this wallet. Use token type to restrict to only certain transactions, such as NFTs |  * X-Doc-Next-Cursor -  <br>  * X-Doc-Next-Link -  <br>  * X-Doc-Start-Cursor -  <br>  |
 **0** | An error message for unexpected requests. |  * X-RateLimit-Limit -  <br>  * X-RateLimit-Remaining -  <br>  * X-RateLimit-Reset -  <br>  |
 
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
