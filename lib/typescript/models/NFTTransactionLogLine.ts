@@ -10,36 +10,24 @@
  * Do not edit the class manually.
  */
 
+import { CurrencyInfo } from './CurrencyInfo';
 import { HttpFile } from '../http/http';
 
-export class AssetGate {
-    /**
-    * True when the given wallet owns any token from a given contract.
-    */
-    'hasContract': boolean;
-    /**
-    * Only true when the given wallet owns a particular token from a given contract.
-    */
-    'hasToken': boolean;
+export class NFTTransactionLogLine {
+    'price'?: CurrencyInfo;
 
     static readonly discriminator: string | undefined = undefined;
 
     static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
         {
-            "name": "hasContract",
-            "baseName": "hasContract",
-            "type": "boolean",
-            "format": ""
-        },
-        {
-            "name": "hasToken",
-            "baseName": "hasToken",
-            "type": "boolean",
+            "name": "price",
+            "baseName": "price",
+            "type": "CurrencyInfo",
             "format": ""
         }    ];
 
     static getAttributeTypeMap() {
-        return AssetGate.attributeTypeMap;
+        return NFTTransactionLogLine.attributeTypeMap;
     }
 
     public constructor() {
