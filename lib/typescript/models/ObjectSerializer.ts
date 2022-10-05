@@ -5,11 +5,14 @@ export * from './Collection';
 export * from './CreditEvent';
 export * from './CurrencyInfo';
 export * from './ENS';
+export * from './ERC20Metadata';
 export * from './ErrorMessage';
 export * from './ExchangeEvent';
 export * from './Media';
 export * from './MediaPreview';
 export * from './MediaVersion';
+export * from './NFTTransaction';
+export * from './NFTTransactionLogLine';
 export * from './NonFungibleToken';
 export * from './OpenSeaContract';
 export * from './OwnedCollection';
@@ -24,18 +27,21 @@ export * from './URL';
 export * from './Wallet';
 
 import { AssetGate } from './AssetGate';
-import { AutoSuggestion  , AutoSuggestionTypeEnum   } from './AutoSuggestion';
+import { AutoSuggestion     , AutoSuggestionTypeEnum   } from './AutoSuggestion';
 import { BlockchainInfo } from './BlockchainInfo';
 import { Collection } from './Collection';
 import { CreditEvent, CreditEventEventEnum    } from './CreditEvent';
 import { CurrencyInfo } from './CurrencyInfo';
 import { ENS } from './ENS';
+import { ERC20Metadata } from './ERC20Metadata';
 import { ErrorMessage } from './ErrorMessage';
 import { ExchangeEvent, ExchangeEventEventEnum    } from './ExchangeEvent';
 import { Media } from './Media';
 import { MediaPreview    , MediaPreviewKindEnum    } from './MediaPreview';
 import { MediaVersion   , MediaVersionKindEnum     } from './MediaVersion';
-import { NonFungibleToken    , NonFungibleTokenDurabilityEnum          } from './NonFungibleToken';
+import { NFTTransaction } from './NFTTransaction';
+import { NFTTransactionLogLine } from './NFTTransactionLogLine';
+import { NonFungibleToken     , NonFungibleTokenDurabilityEnum            } from './NonFungibleToken';
 import { OpenSeaContract, OpenSeaContractAssetContractTypeEnum        } from './OpenSeaContract';
 import { OwnedCollection } from './OwnedCollection';
 import { SearchDocument } from './SearchDocument';
@@ -85,11 +91,14 @@ let typeMap: {[index: string]: any} = {
     "CreditEvent": CreditEvent,
     "CurrencyInfo": CurrencyInfo,
     "ENS": ENS,
+    "ERC20Metadata": ERC20Metadata,
     "ErrorMessage": ErrorMessage,
     "ExchangeEvent": ExchangeEvent,
     "Media": Media,
     "MediaPreview": MediaPreview,
     "MediaVersion": MediaVersion,
+    "NFTTransaction": NFTTransaction,
+    "NFTTransactionLogLine": NFTTransactionLogLine,
     "NonFungibleToken": NonFungibleToken,
     "OpenSeaContract": OpenSeaContract,
     "OwnedCollection": OwnedCollection,

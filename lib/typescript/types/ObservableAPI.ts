@@ -10,11 +10,14 @@ import { Collection } from '../models/Collection';
 import { CreditEvent } from '../models/CreditEvent';
 import { CurrencyInfo } from '../models/CurrencyInfo';
 import { ENS } from '../models/ENS';
+import { ERC20Metadata } from '../models/ERC20Metadata';
 import { ErrorMessage } from '../models/ErrorMessage';
 import { ExchangeEvent } from '../models/ExchangeEvent';
 import { Media } from '../models/Media';
 import { MediaPreview } from '../models/MediaPreview';
 import { MediaVersion } from '../models/MediaVersion';
+import { NFTTransaction } from '../models/NFTTransaction';
+import { NFTTransactionLogLine } from '../models/NFTTransactionLogLine';
 import { NonFungibleToken } from '../models/NonFungibleToken';
 import { OpenSeaContract } from '../models/OpenSeaContract';
 import { OwnedCollection } from '../models/OwnedCollection';
@@ -45,7 +48,32 @@ export class ObservableAlphaApi {
     }
 
     /**
+     * Get autocomplete-style search suggestions for tokens.
+     * Autocomplete tokens
+     * @param query A query or partial query that can be used to retrieve suggested results. For example \&quot;bored a\&quot; would return a suggestion for \&quot;bored ape.\&quot;
+     */
+    public getTokensSuggestionsResults(query?: string, _options?: Configuration): Observable<Array<AutoSuggestion>> {
+        const requestContextPromise = this.requestFactory.getTokensSuggestionsResults(query, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.getTokensSuggestionsResults(rsp)));
+            }));
+    }
+
+    /**
      * Returns trending and interesting collections on Ethereum. Useful for powering discovery experiences and providing an on-ramp to exploring creative blockchain data.
+     * Get top collections
      */
     public getTopCollections(_options?: Configuration): Observable<Array<Collection>> {
         const requestContextPromise = this.requestFactory.getTopCollections(_options);
@@ -68,6 +96,7 @@ export class ObservableAlphaApi {
 
     /**
      * Returns trending and interesting NFTs and SFTs on Ethereum. Useful for powering discovery experiences and providing an on-ramp to exploring creative blockchain data.
+     * Get top tokens
      */
     public getTopTokens(_options?: Configuration): Observable<Array<Token>> {
         const requestContextPromise = this.requestFactory.getTopTokens(_options);
@@ -90,6 +119,7 @@ export class ObservableAlphaApi {
 
     /**
      * Returns trending and interesting wallets on Ethereum. Useful for powering discovery experiences and providing an on-ramp to exploring creative blockchain data.
+     * Get top wallets
      */
     public getTopWallets(_options?: Configuration): Observable<Array<Wallet>> {
         const requestContextPromise = this.requestFactory.getTopWallets(_options);
@@ -107,6 +137,33 @@ export class ObservableAlphaApi {
                     middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
                 }
                 return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.getTopWallets(rsp)));
+            }));
+    }
+
+    /**
+     * The metadata will be refreshed offline and later updated.
+     * Submit a request for metadata to be refreshed.
+     * @param contractAddress A hex address for a blockchain contract.
+     * @param tokenID An arbitrary ID defined by a contract to uniquely identify a cryptographic asset such as an NFT.
+     * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
+     * @param media Refresh media.
+     */
+    public postRefresh(contractAddress: string, tokenID: string, chainID?: string, media?: boolean, _options?: Configuration): Observable<void> {
+        const requestContextPromise = this.requestFactory.postRefresh(contractAddress, tokenID, chainID, media, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.postRefresh(rsp)));
             }));
     }
 
@@ -130,6 +187,7 @@ export class ObservableDefaultApi {
 
     /**
      * Lists all supported blockchains.
+     * Get supported blockchains
      */
     public getBlockchains(_options?: Configuration): Observable<Array<BlockchainInfo>> {
         const requestContextPromise = this.requestFactory.getBlockchains(_options);
@@ -152,6 +210,7 @@ export class ObservableDefaultApi {
 
     /**
      * Get a collection by its contract address.
+     * Get collection
      * @param contractAddress A hex address for a blockchain contract.
      * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
      */
@@ -175,7 +234,32 @@ export class ObservableDefaultApi {
     }
 
     /**
+     * Get autocomplete-style search suggestions for collections.
+     * Autocomplete collections
+     * @param query A query or partial query that can be used to retrieve suggested results. For example \&quot;bored a\&quot; would return a suggestion for \&quot;bored ape.\&quot;
+     */
+    public getCollectionsSuggestionsResults(query?: string, _options?: Configuration): Observable<Array<AutoSuggestion>> {
+        const requestContextPromise = this.requestFactory.getCollectionsSuggestionsResults(query, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.getCollectionsSuggestionsResults(rsp)));
+            }));
+    }
+
+    /**
      * Determine if a wallet has any token from a contract.
+     * Has tokens
      * @param contractAddress A hex address for a blockchain contract.
      * @param walletAddress A hex string referencing a public wallet address.
      * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
@@ -201,6 +285,7 @@ export class ObservableDefaultApi {
 
     /**
      * Get tokens by contract address.
+     * Get tokens
      * @param contractAddress A hex address for a blockchain contract.
      * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
      * @param limit Limits the number of results in a single response.
@@ -226,6 +311,7 @@ export class ObservableDefaultApi {
 
     /**
      * Returns tokens from a batch lookup.
+     * Batch token lookup
      * @param contractAddresses A comma-separated hex address for a blockchain contract, the order of values should match the order in tokenIdentifiers.
      * @param tokenIdentifiers A comma-separated token ID, the order of values should match the order in contractAddresses.
      * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
@@ -251,9 +337,10 @@ export class ObservableDefaultApi {
     }
 
     /**
-     * Get the transaction history for a collection
+     * Get the transaction history for a collection.
+     * Get collection transactions
      * @param contractAddress A hex address for a blockchain contract.
-     * @param cursor Cursor to support API pagination.
+     * @param cursor Cursor to support API pagination. This value is returned via the X-Doc-Next-Link HTTP response header for endpoints that support pagination and have more documents available. The cursor expires after 24-hours.
      * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
      * @param limit Limits the number of results in a single response.
      */
@@ -277,12 +364,39 @@ export class ObservableDefaultApi {
     }
 
     /**
-     * Get search results such as wallets, tokens, and collections by a search query.
-     * @param query A search query that returns matching results
-     * @param cursor Cursor to support API pagination.
+     * Get ERC-20 metadata by contract address.
+     * Get ERC-20 metadata
+     * @param contractAddress A hex address for a blockchain contract.
+     * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
      */
-    public getSearchResults(query: string, cursor?: string, _options?: Configuration): Observable<Array<SearchDocument>> {
-        const requestContextPromise = this.requestFactory.getSearchResults(query, cursor, _options);
+    public getERC20Metadata(contractAddress: string, chainID?: string, _options?: Configuration): Observable<Array<ERC20Metadata>> {
+        const requestContextPromise = this.requestFactory.getERC20Metadata(contractAddress, chainID, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.getERC20Metadata(rsp)));
+            }));
+    }
+
+    /**
+     * Get search results such as wallets, tokens, and collections by a search query.
+     * Search
+     * @param query A search query that returns matching results
+     * @param cursor Cursor to support API pagination. This value is returned via the X-Doc-Next-Link HTTP response header for endpoints that support pagination and have more documents available. The cursor expires after 24-hours.
+     * @param limit Limits the number of results in a single response.
+     */
+    public getSearchResults(query: string, cursor?: string, limit?: number, _options?: Configuration): Observable<Array<SearchDocument>> {
+        const requestContextPromise = this.requestFactory.getSearchResults(query, cursor, limit, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -302,9 +416,10 @@ export class ObservableDefaultApi {
 
     /**
      * Returns a list of tokens sold by a wallet.
+     * Get sold tokens
      * @param walletAddress A hex string referencing a public wallet address.
      * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
-     * @param cursor Cursor to support API pagination.
+     * @param cursor Cursor to support API pagination. This value is returned via the X-Doc-Next-Link HTTP response header for endpoints that support pagination and have more documents available. The cursor expires after 24-hours.
      * @param limit Limits the number of results in a single response.
      */
     public getSoldTokens(walletAddress: string, chainID?: string, cursor?: string, limit?: number, _options?: Configuration): Observable<Array<Token>> {
@@ -328,6 +443,7 @@ export class ObservableDefaultApi {
 
     /**
      * Get autocomplete-style search suggestions for results.
+     * Autocomplete
      * @param query A query or partial query that can be used to retrieve suggested results. For example \&quot;bored a\&quot; would return a suggestion for \&quot;bored ape.\&quot;
      */
     public getSuggestionsResults(query?: string, _options?: Configuration): Observable<Array<AutoSuggestion>> {
@@ -351,6 +467,7 @@ export class ObservableDefaultApi {
 
     /**
      * Get a token by its contract address and token ID.
+     * Get token
      * @param contractAddress A hex address for a blockchain contract.
      * @param tokenID An arbitrary ID defined by a contract to uniquely identify a cryptographic asset such as an NFT.
      * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
@@ -376,6 +493,7 @@ export class ObservableDefaultApi {
 
     /**
      * Determine if a wallet has a given token from a contract.
+     * Has token
      * @param tokenID An arbitrary ID defined by a contract to uniquely identify a cryptographic asset such as an NFT.
      * @param contractAddress A hex address for a blockchain contract.
      * @param walletAddress A hex string referencing a public wallet address.
@@ -402,6 +520,7 @@ export class ObservableDefaultApi {
 
     /**
      * Returns a list of transfer transactions on a specified token.
+     * Get token transfers
      * @param contractAddress A hex address for a blockchain contract.
      * @param tokenID An arbitrary ID defined by a contract to uniquely identify a cryptographic asset such as an NFT.
      * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
@@ -428,11 +547,14 @@ export class ObservableDefaultApi {
 
     /**
      * Get tokens by a search query.
+     * Search tokens
      * @param query A search query that returns matching results
-     * @param cursor Cursor to support API pagination.
+     * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
+     * @param limit Limits the number of results in a single response.
+     * @param cursor Cursor to support API pagination. This value is returned via the X-Doc-Next-Link HTTP response header for endpoints that support pagination and have more documents available. The cursor expires after 24-hours.
      */
-    public getTokensBySearchQuery(query: string, cursor?: string, _options?: Configuration): Observable<Array<Token>> {
-        const requestContextPromise = this.requestFactory.getTokensBySearchQuery(query, cursor, _options);
+    public getTokensBySearchQuery(query: string, chainID?: string, limit?: number, cursor?: string, _options?: Configuration): Observable<Array<Token>> {
+        const requestContextPromise = this.requestFactory.getTokensBySearchQuery(query, chainID, limit, cursor, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -451,7 +573,8 @@ export class ObservableDefaultApi {
     }
 
     /**
-     * Get a wallet by a wallet address
+     * Get a wallet by a wallet address.
+     * Get wallet
      * @param walletAddress A hex string referencing a public wallet address.
      * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
      */
@@ -475,12 +598,14 @@ export class ObservableDefaultApi {
     }
 
     /**
-     * Returns a list of balances for tokens this wallet currently owns.
+     * Returns a list of balances for tokens this wallet currently owns, sorted by contract.
+     * Get balances
      * @param walletAddress A hex string referencing a public wallet address.
      * @param limit Limits the number of results in a single response.
+     * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
      */
-    public getWalletBalances(walletAddress: string, limit?: number, _options?: Configuration): Observable<Array<CurrencyInfo>> {
-        const requestContextPromise = this.requestFactory.getWalletBalances(walletAddress, limit, _options);
+    public getWalletBalances(walletAddress: string, limit?: number, chainID?: string, _options?: Configuration): Observable<Array<CurrencyInfo>> {
+        const requestContextPromise = this.requestFactory.getWalletBalances(walletAddress, limit, chainID, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -499,10 +624,35 @@ export class ObservableDefaultApi {
     }
 
     /**
+     * Returns the latest approval events for all contracts the wallet has given spending authority to.
+     * Get approved contracts
+     * @param walletAddress A hex string referencing a public wallet address.
+     */
+    public getWalletContractApprovals(walletAddress: string, _options?: Configuration): Observable<Array<Transaction>> {
+        const requestContextPromise = this.requestFactory.getWalletContractApprovals(walletAddress, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.getWalletContractApprovals(rsp)));
+            }));
+    }
+
+    /**
      * Returns a list of tokens minted by a wallet.
+     * Get minted tokens
      * @param walletAddress A hex string referencing a public wallet address.
      * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
-     * @param cursor Cursor to support API pagination.
+     * @param cursor Cursor to support API pagination. This value is returned via the X-Doc-Next-Link HTTP response header for endpoints that support pagination and have more documents available. The cursor expires after 24-hours.
      * @param limit Limits the number of results in a single response.
      */
     public getWalletMints(walletAddress: string, chainID?: string, cursor?: string, limit?: number, _options?: Configuration): Observable<Array<Token>> {
@@ -526,13 +676,15 @@ export class ObservableDefaultApi {
 
     /**
      * Returns a list of tokens owned by a wallet.
+     * Get owned tokens
      * @param walletAddress A hex string referencing a public wallet address.
-     * @param cursor Cursor to support API pagination.
+     * @param filterAirdrops A boolean that will remove airdropped tokens from a result set.
+     * @param cursor Cursor to support API pagination. This value is returned via the X-Doc-Next-Link HTTP response header for endpoints that support pagination and have more documents available. The cursor expires after 24-hours.
      * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
      * @param limit Limits the number of results in a single response.
      */
-    public getWalletTokens(walletAddress: string, cursor?: string, chainID?: string, limit?: number, _options?: Configuration): Observable<Array<Token>> {
-        const requestContextPromise = this.requestFactory.getWalletTokens(walletAddress, cursor, chainID, limit, _options);
+    public getWalletTokens(walletAddress: string, filterAirdrops?: boolean, cursor?: string, chainID?: string, limit?: number, _options?: Configuration): Observable<Array<Token>> {
+        const requestContextPromise = this.requestFactory.getWalletTokens(walletAddress, filterAirdrops, cursor, chainID, limit, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -551,12 +703,41 @@ export class ObservableDefaultApi {
     }
 
     /**
-     * Returns transactions related to a wallet.
+     * Returns a list of collections with tokens owned by a wallet.
+     * Get owned NFT collections
      * @param walletAddress A hex string referencing a public wallet address.
-     * @param cursor Cursor to support API pagination.
+     * @param cursor Cursor to support API pagination. This value is returned via the X-Doc-Next-Link HTTP response header for endpoints that support pagination and have more documents available. The cursor expires after 24-hours.
+     * @param filterAirdrops A boolean that will remove airdropped tokens from a result set.
+     * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
+     * @param limit Limits the number of results in a single response.
+     */
+    public getWalletTokensByCollections(walletAddress: string, cursor?: string, filterAirdrops?: boolean, chainID?: string, limit?: number, _options?: Configuration): Observable<Array<OwnedCollection>> {
+        const requestContextPromise = this.requestFactory.getWalletTokensByCollections(walletAddress, cursor, filterAirdrops, chainID, limit, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.getWalletTokensByCollections(rsp)));
+            }));
+    }
+
+    /**
+     * Returns transactions related to a wallet.
+     * Get wallet transactions
+     * @param walletAddress A hex string referencing a public wallet address.
+     * @param cursor Cursor to support API pagination. This value is returned via the X-Doc-Next-Link HTTP response header for endpoints that support pagination and have more documents available. The cursor expires after 24-hours.
      * @param limit Limits the number of results in a single response.
      * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
-     * @param tokenType An indicator that be used to filter to only a subet of tokens, for example only NFTs. To select ERC-20, sidechain and L1 transactions, use the \&quot;fungible.\&quot; To select only NFTs or semi-fungible tokens (SFTs), use the respective enum.
+     * @param tokenType The token type filters a query to only a subset of tokens, for example, only NFTs. To select ERC-20 and sidechain transactions, use the \&quot;fungible\&quot; value. To select only NFTs or semi-fungible tokens (SFTs), use the \&quot;NFT\&quot; or \&quot;SFT\&quot; enums. To select only L1 native token transactions, use the \&quot;native\&quot; enum.
      */
     public getWalletTransactions(walletAddress: string, cursor?: string, limit?: number, chainID?: string, tokenType?: 'native' | 'fungible' | 'NFT' | 'SFT' | 'unknown', _options?: Configuration): Observable<Array<Transaction>> {
         const requestContextPromise = this.requestFactory.getWalletTransactions(walletAddress, cursor, limit, chainID, tokenType, _options);
@@ -574,6 +755,30 @@ export class ObservableDefaultApi {
                     middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
                 }
                 return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.getWalletTransactions(rsp)));
+            }));
+    }
+
+    /**
+     * Get autocomplete-style search suggestions for wallets.
+     * Autocomplete wallets
+     * @param query A query or partial query that can be used to retrieve suggested results. For example \&quot;bored a\&quot; would return a suggestion for \&quot;bored ape.\&quot;
+     */
+    public getWalletsSuggestionsResults(query?: string, _options?: Configuration): Observable<Array<AutoSuggestion>> {
+        const requestContextPromise = this.requestFactory.getWalletsSuggestionsResults(query, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.getWalletsSuggestionsResults(rsp)));
             }));
     }
 

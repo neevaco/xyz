@@ -13,7 +13,9 @@ import { AutoSuggestion } from '../models/AutoSuggestion';
 import { BlockchainInfo } from '../models/BlockchainInfo';
 import { Collection } from '../models/Collection';
 import { CurrencyInfo } from '../models/CurrencyInfo';
+import { ERC20Metadata } from '../models/ERC20Metadata';
 import { ErrorMessage } from '../models/ErrorMessage';
+import { OwnedCollection } from '../models/OwnedCollection';
 import { SearchDocument } from '../models/SearchDocument';
 import { Token } from '../models/Token';
 import { TokenEvents } from '../models/TokenEvents';
@@ -27,6 +29,7 @@ export class DefaultApiRequestFactory extends BaseAPIRequestFactory {
 
     /**
      * Lists all supported blockchains.
+     * Get supported blockchains
      */
     public async getBlockchains(_options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
@@ -56,6 +59,7 @@ export class DefaultApiRequestFactory extends BaseAPIRequestFactory {
 
     /**
      * Get a collection by its contract address.
+     * Get collection
      * @param contractAddress A hex address for a blockchain contract.
      * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
      */
@@ -99,7 +103,45 @@ export class DefaultApiRequestFactory extends BaseAPIRequestFactory {
     }
 
     /**
+     * Get autocomplete-style search suggestions for collections.
+     * Autocomplete collections
+     * @param query A query or partial query that can be used to retrieve suggested results. For example \&quot;bored a\&quot; would return a suggestion for \&quot;bored ape.\&quot;
+     */
+    public async getCollectionsSuggestionsResults(query?: string, _options?: Configuration): Promise<RequestContext> {
+        let _config = _options || this.configuration;
+
+
+        // Path Params
+        const localVarPath = '/api/v1/collections/suggestions';
+
+        // Make Request Context
+        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
+        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
+
+        // Query Params
+        if (query !== undefined) {
+            requestContext.setQueryParam("query", ObjectSerializer.serialize(query, "string", ""));
+        }
+
+
+        let authMethod: SecurityAuthentication | undefined;
+        // Apply auth methods
+        authMethod = _config.authMethods["apikey"]
+        if (authMethod?.applySecurityAuthentication) {
+            await authMethod?.applySecurityAuthentication(requestContext);
+        }
+        
+        const defaultAuth: SecurityAuthentication | undefined = _options?.authMethods?.default || this.configuration?.authMethods?.default
+        if (defaultAuth?.applySecurityAuthentication) {
+            await defaultAuth?.applySecurityAuthentication(requestContext);
+        }
+
+        return requestContext;
+    }
+
+    /**
      * Determine if a wallet has any token from a contract.
+     * Has tokens
      * @param contractAddress A hex address for a blockchain contract.
      * @param walletAddress A hex string referencing a public wallet address.
      * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
@@ -152,6 +194,7 @@ export class DefaultApiRequestFactory extends BaseAPIRequestFactory {
 
     /**
      * Get tokens by contract address.
+     * Get tokens
      * @param contractAddress A hex address for a blockchain contract.
      * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
      * @param limit Limits the number of results in a single response.
@@ -203,6 +246,7 @@ export class DefaultApiRequestFactory extends BaseAPIRequestFactory {
 
     /**
      * Returns tokens from a batch lookup.
+     * Batch token lookup
      * @param contractAddresses A comma-separated hex address for a blockchain contract, the order of values should match the order in tokenIdentifiers.
      * @param tokenIdentifiers A comma-separated token ID, the order of values should match the order in contractAddresses.
      * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
@@ -269,9 +313,10 @@ export class DefaultApiRequestFactory extends BaseAPIRequestFactory {
     }
 
     /**
-     * Get the transaction history for a collection
+     * Get the transaction history for a collection.
+     * Get collection transactions
      * @param contractAddress A hex address for a blockchain contract.
-     * @param cursor Cursor to support API pagination.
+     * @param cursor Cursor to support API pagination. This value is returned via the X-Doc-Next-Link HTTP response header for endpoints that support pagination and have more documents available. The cursor expires after 24-hours.
      * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
      * @param limit Limits the number of results in a single response.
      */
@@ -327,17 +372,65 @@ export class DefaultApiRequestFactory extends BaseAPIRequestFactory {
     }
 
     /**
-     * Get search results such as wallets, tokens, and collections by a search query.
-     * @param query A search query that returns matching results
-     * @param cursor Cursor to support API pagination.
+     * Get ERC-20 metadata by contract address.
+     * Get ERC-20 metadata
+     * @param contractAddress A hex address for a blockchain contract.
+     * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
      */
-    public async getSearchResults(query: string, cursor?: string, _options?: Configuration): Promise<RequestContext> {
+    public async getERC20Metadata(contractAddress: string, chainID?: string, _options?: Configuration): Promise<RequestContext> {
+        let _config = _options || this.configuration;
+
+        // verify required parameter 'contractAddress' is not null or undefined
+        if (contractAddress === null || contractAddress === undefined) {
+            throw new RequiredError("DefaultApi", "getERC20Metadata", "contractAddress");
+        }
+
+
+
+        // Path Params
+        const localVarPath = '/api/v1/token/{contractAddress}/erc20/metadata'
+            .replace('{' + 'contractAddress' + '}', encodeURIComponent(String(contractAddress)));
+
+        // Make Request Context
+        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
+        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
+
+        // Query Params
+        if (chainID !== undefined) {
+            requestContext.setQueryParam("chainID", ObjectSerializer.serialize(chainID, "string", ""));
+        }
+
+
+        let authMethod: SecurityAuthentication | undefined;
+        // Apply auth methods
+        authMethod = _config.authMethods["apikey"]
+        if (authMethod?.applySecurityAuthentication) {
+            await authMethod?.applySecurityAuthentication(requestContext);
+        }
+        
+        const defaultAuth: SecurityAuthentication | undefined = _options?.authMethods?.default || this.configuration?.authMethods?.default
+        if (defaultAuth?.applySecurityAuthentication) {
+            await defaultAuth?.applySecurityAuthentication(requestContext);
+        }
+
+        return requestContext;
+    }
+
+    /**
+     * Get search results such as wallets, tokens, and collections by a search query.
+     * Search
+     * @param query A search query that returns matching results
+     * @param cursor Cursor to support API pagination. This value is returned via the X-Doc-Next-Link HTTP response header for endpoints that support pagination and have more documents available. The cursor expires after 24-hours.
+     * @param limit Limits the number of results in a single response.
+     */
+    public async getSearchResults(query: string, cursor?: string, limit?: number, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'query' is not null or undefined
         if (query === null || query === undefined) {
             throw new RequiredError("DefaultApi", "getSearchResults", "query");
         }
+
 
 
 
@@ -352,6 +445,11 @@ export class DefaultApiRequestFactory extends BaseAPIRequestFactory {
         // Query Params
         if (cursor !== undefined) {
             requestContext.setQueryParam("cursor", ObjectSerializer.serialize(cursor, "string", ""));
+        }
+
+        // Query Params
+        if (limit !== undefined) {
+            requestContext.setQueryParam("limit", ObjectSerializer.serialize(limit, "number", ""));
         }
 
 
@@ -372,9 +470,10 @@ export class DefaultApiRequestFactory extends BaseAPIRequestFactory {
 
     /**
      * Returns a list of tokens sold by a wallet.
+     * Get sold tokens
      * @param walletAddress A hex string referencing a public wallet address.
      * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
-     * @param cursor Cursor to support API pagination.
+     * @param cursor Cursor to support API pagination. This value is returned via the X-Doc-Next-Link HTTP response header for endpoints that support pagination and have more documents available. The cursor expires after 24-hours.
      * @param limit Limits the number of results in a single response.
      */
     public async getSoldTokens(walletAddress: string, chainID?: string, cursor?: string, limit?: number, _options?: Configuration): Promise<RequestContext> {
@@ -430,6 +529,7 @@ export class DefaultApiRequestFactory extends BaseAPIRequestFactory {
 
     /**
      * Get autocomplete-style search suggestions for results.
+     * Autocomplete
      * @param query A query or partial query that can be used to retrieve suggested results. For example \&quot;bored a\&quot; would return a suggestion for \&quot;bored ape.\&quot;
      */
     public async getSuggestionsResults(query?: string, _options?: Configuration): Promise<RequestContext> {
@@ -466,6 +566,7 @@ export class DefaultApiRequestFactory extends BaseAPIRequestFactory {
 
     /**
      * Get a token by its contract address and token ID.
+     * Get token
      * @param contractAddress A hex address for a blockchain contract.
      * @param tokenID An arbitrary ID defined by a contract to uniquely identify a cryptographic asset such as an NFT.
      * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
@@ -518,6 +619,7 @@ export class DefaultApiRequestFactory extends BaseAPIRequestFactory {
 
     /**
      * Determine if a wallet has a given token from a contract.
+     * Has token
      * @param tokenID An arbitrary ID defined by a contract to uniquely identify a cryptographic asset such as an NFT.
      * @param contractAddress A hex address for a blockchain contract.
      * @param walletAddress A hex string referencing a public wallet address.
@@ -578,6 +680,7 @@ export class DefaultApiRequestFactory extends BaseAPIRequestFactory {
 
     /**
      * Returns a list of transfer transactions on a specified token.
+     * Get token transfers
      * @param contractAddress A hex address for a blockchain contract.
      * @param tokenID An arbitrary ID defined by a contract to uniquely identify a cryptographic asset such as an NFT.
      * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
@@ -637,16 +740,21 @@ export class DefaultApiRequestFactory extends BaseAPIRequestFactory {
 
     /**
      * Get tokens by a search query.
+     * Search tokens
      * @param query A search query that returns matching results
-     * @param cursor Cursor to support API pagination.
+     * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
+     * @param limit Limits the number of results in a single response.
+     * @param cursor Cursor to support API pagination. This value is returned via the X-Doc-Next-Link HTTP response header for endpoints that support pagination and have more documents available. The cursor expires after 24-hours.
      */
-    public async getTokensBySearchQuery(query: string, cursor?: string, _options?: Configuration): Promise<RequestContext> {
+    public async getTokensBySearchQuery(query: string, chainID?: string, limit?: number, cursor?: string, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'query' is not null or undefined
         if (query === null || query === undefined) {
             throw new RequiredError("DefaultApi", "getTokensBySearchQuery", "query");
         }
+
+
 
 
 
@@ -657,6 +765,16 @@ export class DefaultApiRequestFactory extends BaseAPIRequestFactory {
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
         requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
+
+        // Query Params
+        if (chainID !== undefined) {
+            requestContext.setQueryParam("chainID", ObjectSerializer.serialize(chainID, "string", ""));
+        }
+
+        // Query Params
+        if (limit !== undefined) {
+            requestContext.setQueryParam("limit", ObjectSerializer.serialize(limit, "number", ""));
+        }
 
         // Query Params
         if (cursor !== undefined) {
@@ -680,7 +798,8 @@ export class DefaultApiRequestFactory extends BaseAPIRequestFactory {
     }
 
     /**
-     * Get a wallet by a wallet address
+     * Get a wallet by a wallet address.
+     * Get wallet
      * @param walletAddress A hex string referencing a public wallet address.
      * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
      */
@@ -724,17 +843,20 @@ export class DefaultApiRequestFactory extends BaseAPIRequestFactory {
     }
 
     /**
-     * Returns a list of balances for tokens this wallet currently owns.
+     * Returns a list of balances for tokens this wallet currently owns, sorted by contract.
+     * Get balances
      * @param walletAddress A hex string referencing a public wallet address.
      * @param limit Limits the number of results in a single response.
+     * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
      */
-    public async getWalletBalances(walletAddress: string, limit?: number, _options?: Configuration): Promise<RequestContext> {
+    public async getWalletBalances(walletAddress: string, limit?: number, chainID?: string, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'walletAddress' is not null or undefined
         if (walletAddress === null || walletAddress === undefined) {
             throw new RequiredError("DefaultApi", "getWalletBalances", "walletAddress");
         }
+
 
 
 
@@ -749,6 +871,11 @@ export class DefaultApiRequestFactory extends BaseAPIRequestFactory {
         // Query Params
         if (limit !== undefined) {
             requestContext.setQueryParam("limit", ObjectSerializer.serialize(limit, "number", ""));
+        }
+
+        // Query Params
+        if (chainID !== undefined) {
+            requestContext.setQueryParam("chainID", ObjectSerializer.serialize(chainID, "string", ""));
         }
 
 
@@ -768,10 +895,49 @@ export class DefaultApiRequestFactory extends BaseAPIRequestFactory {
     }
 
     /**
+     * Returns the latest approval events for all contracts the wallet has given spending authority to.
+     * Get approved contracts
+     * @param walletAddress A hex string referencing a public wallet address.
+     */
+    public async getWalletContractApprovals(walletAddress: string, _options?: Configuration): Promise<RequestContext> {
+        let _config = _options || this.configuration;
+
+        // verify required parameter 'walletAddress' is not null or undefined
+        if (walletAddress === null || walletAddress === undefined) {
+            throw new RequiredError("DefaultApi", "getWalletContractApprovals", "walletAddress");
+        }
+
+
+        // Path Params
+        const localVarPath = '/api/v1/wallets/{walletAddress}/approvals'
+            .replace('{' + 'walletAddress' + '}', encodeURIComponent(String(walletAddress)));
+
+        // Make Request Context
+        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
+        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
+
+
+        let authMethod: SecurityAuthentication | undefined;
+        // Apply auth methods
+        authMethod = _config.authMethods["apikey"]
+        if (authMethod?.applySecurityAuthentication) {
+            await authMethod?.applySecurityAuthentication(requestContext);
+        }
+        
+        const defaultAuth: SecurityAuthentication | undefined = _options?.authMethods?.default || this.configuration?.authMethods?.default
+        if (defaultAuth?.applySecurityAuthentication) {
+            await defaultAuth?.applySecurityAuthentication(requestContext);
+        }
+
+        return requestContext;
+    }
+
+    /**
      * Returns a list of tokens minted by a wallet.
+     * Get minted tokens
      * @param walletAddress A hex string referencing a public wallet address.
      * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
-     * @param cursor Cursor to support API pagination.
+     * @param cursor Cursor to support API pagination. This value is returned via the X-Doc-Next-Link HTTP response header for endpoints that support pagination and have more documents available. The cursor expires after 24-hours.
      * @param limit Limits the number of results in a single response.
      */
     public async getWalletMints(walletAddress: string, chainID?: string, cursor?: string, limit?: number, _options?: Configuration): Promise<RequestContext> {
@@ -827,18 +993,21 @@ export class DefaultApiRequestFactory extends BaseAPIRequestFactory {
 
     /**
      * Returns a list of tokens owned by a wallet.
+     * Get owned tokens
      * @param walletAddress A hex string referencing a public wallet address.
-     * @param cursor Cursor to support API pagination.
+     * @param filterAirdrops A boolean that will remove airdropped tokens from a result set.
+     * @param cursor Cursor to support API pagination. This value is returned via the X-Doc-Next-Link HTTP response header for endpoints that support pagination and have more documents available. The cursor expires after 24-hours.
      * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
      * @param limit Limits the number of results in a single response.
      */
-    public async getWalletTokens(walletAddress: string, cursor?: string, chainID?: string, limit?: number, _options?: Configuration): Promise<RequestContext> {
+    public async getWalletTokens(walletAddress: string, filterAirdrops?: boolean, cursor?: string, chainID?: string, limit?: number, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'walletAddress' is not null or undefined
         if (walletAddress === null || walletAddress === undefined) {
             throw new RequiredError("DefaultApi", "getWalletTokens", "walletAddress");
         }
+
 
 
 
@@ -851,6 +1020,11 @@ export class DefaultApiRequestFactory extends BaseAPIRequestFactory {
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
         requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
+
+        // Query Params
+        if (filterAirdrops !== undefined) {
+            requestContext.setQueryParam("filterAirdrops", ObjectSerializer.serialize(filterAirdrops, "boolean", ""));
+        }
 
         // Query Params
         if (cursor !== undefined) {
@@ -884,12 +1058,79 @@ export class DefaultApiRequestFactory extends BaseAPIRequestFactory {
     }
 
     /**
-     * Returns transactions related to a wallet.
+     * Returns a list of collections with tokens owned by a wallet.
+     * Get owned NFT collections
      * @param walletAddress A hex string referencing a public wallet address.
-     * @param cursor Cursor to support API pagination.
+     * @param cursor Cursor to support API pagination. This value is returned via the X-Doc-Next-Link HTTP response header for endpoints that support pagination and have more documents available. The cursor expires after 24-hours.
+     * @param filterAirdrops A boolean that will remove airdropped tokens from a result set.
+     * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
+     * @param limit Limits the number of results in a single response.
+     */
+    public async getWalletTokensByCollections(walletAddress: string, cursor?: string, filterAirdrops?: boolean, chainID?: string, limit?: number, _options?: Configuration): Promise<RequestContext> {
+        let _config = _options || this.configuration;
+
+        // verify required parameter 'walletAddress' is not null or undefined
+        if (walletAddress === null || walletAddress === undefined) {
+            throw new RequiredError("DefaultApi", "getWalletTokensByCollections", "walletAddress");
+        }
+
+
+
+
+
+
+        // Path Params
+        const localVarPath = '/api/v1/wallets/{walletAddress}/collections'
+            .replace('{' + 'walletAddress' + '}', encodeURIComponent(String(walletAddress)));
+
+        // Make Request Context
+        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
+        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
+
+        // Query Params
+        if (cursor !== undefined) {
+            requestContext.setQueryParam("cursor", ObjectSerializer.serialize(cursor, "string", ""));
+        }
+
+        // Query Params
+        if (filterAirdrops !== undefined) {
+            requestContext.setQueryParam("filterAirdrops", ObjectSerializer.serialize(filterAirdrops, "boolean", ""));
+        }
+
+        // Query Params
+        if (chainID !== undefined) {
+            requestContext.setQueryParam("chainID", ObjectSerializer.serialize(chainID, "string", ""));
+        }
+
+        // Query Params
+        if (limit !== undefined) {
+            requestContext.setQueryParam("limit", ObjectSerializer.serialize(limit, "number", ""));
+        }
+
+
+        let authMethod: SecurityAuthentication | undefined;
+        // Apply auth methods
+        authMethod = _config.authMethods["apikey"]
+        if (authMethod?.applySecurityAuthentication) {
+            await authMethod?.applySecurityAuthentication(requestContext);
+        }
+        
+        const defaultAuth: SecurityAuthentication | undefined = _options?.authMethods?.default || this.configuration?.authMethods?.default
+        if (defaultAuth?.applySecurityAuthentication) {
+            await defaultAuth?.applySecurityAuthentication(requestContext);
+        }
+
+        return requestContext;
+    }
+
+    /**
+     * Returns transactions related to a wallet.
+     * Get wallet transactions
+     * @param walletAddress A hex string referencing a public wallet address.
+     * @param cursor Cursor to support API pagination. This value is returned via the X-Doc-Next-Link HTTP response header for endpoints that support pagination and have more documents available. The cursor expires after 24-hours.
      * @param limit Limits the number of results in a single response.
      * @param chainID An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
-     * @param tokenType An indicator that be used to filter to only a subet of tokens, for example only NFTs. To select ERC-20, sidechain and L1 transactions, use the \&quot;fungible.\&quot; To select only NFTs or semi-fungible tokens (SFTs), use the respective enum.
+     * @param tokenType The token type filters a query to only a subset of tokens, for example, only NFTs. To select ERC-20 and sidechain transactions, use the \&quot;fungible\&quot; value. To select only NFTs or semi-fungible tokens (SFTs), use the \&quot;NFT\&quot; or \&quot;SFT\&quot; enums. To select only L1 native token transactions, use the \&quot;native\&quot; enum.
      */
     public async getWalletTransactions(walletAddress: string, cursor?: string, limit?: number, chainID?: string, tokenType?: 'native' | 'fungible' | 'NFT' | 'SFT' | 'unknown', _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
@@ -930,6 +1171,43 @@ export class DefaultApiRequestFactory extends BaseAPIRequestFactory {
         // Query Params
         if (tokenType !== undefined) {
             requestContext.setQueryParam("tokenType", ObjectSerializer.serialize(tokenType, "'native' | 'fungible' | 'NFT' | 'SFT' | 'unknown'", ""));
+        }
+
+
+        let authMethod: SecurityAuthentication | undefined;
+        // Apply auth methods
+        authMethod = _config.authMethods["apikey"]
+        if (authMethod?.applySecurityAuthentication) {
+            await authMethod?.applySecurityAuthentication(requestContext);
+        }
+        
+        const defaultAuth: SecurityAuthentication | undefined = _options?.authMethods?.default || this.configuration?.authMethods?.default
+        if (defaultAuth?.applySecurityAuthentication) {
+            await defaultAuth?.applySecurityAuthentication(requestContext);
+        }
+
+        return requestContext;
+    }
+
+    /**
+     * Get autocomplete-style search suggestions for wallets.
+     * Autocomplete wallets
+     * @param query A query or partial query that can be used to retrieve suggested results. For example \&quot;bored a\&quot; would return a suggestion for \&quot;bored ape.\&quot;
+     */
+    public async getWalletsSuggestionsResults(query?: string, _options?: Configuration): Promise<RequestContext> {
+        let _config = _options || this.configuration;
+
+
+        // Path Params
+        const localVarPath = '/api/v1/wallets/suggestions';
+
+        // Make Request Context
+        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
+        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
+
+        // Query Params
+        if (query !== undefined) {
+            requestContext.setQueryParam("query", ObjectSerializer.serialize(query, "string", ""));
         }
 
 
@@ -1018,6 +1296,42 @@ export class DefaultApiResponseProcessor {
                 ObjectSerializer.parse(await response.body.text(), contentType),
                 "Array<Collection>", ""
             ) as Array<Collection>;
+            return body;
+        }
+
+        throw new ApiException<string | Blob | undefined>(response.httpStatusCode, "Unknown API Status Code!", await response.getBodyAsAny(), response.headers);
+    }
+
+    /**
+     * Unwraps the actual response sent by the server from the response context and deserializes the response content
+     * to the expected objects
+     *
+     * @params response Response returned by the server for a request to getCollectionsSuggestionsResults
+     * @throws ApiException if the response code was not in [200, 299]
+     */
+     public async getCollectionsSuggestionsResults(response: ResponseContext): Promise<Array<AutoSuggestion> > {
+        const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
+        if (isCodeInRange("200", response.httpStatusCode)) {
+            const body: Array<AutoSuggestion> = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "Array<AutoSuggestion>", ""
+            ) as Array<AutoSuggestion>;
+            return body;
+        }
+        if (isCodeInRange("0", response.httpStatusCode)) {
+            const body: ErrorMessage = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "ErrorMessage", ""
+            ) as ErrorMessage;
+            throw new ApiException<ErrorMessage>(response.httpStatusCode, "An error message for unexpected requests.", body, response.headers);
+        }
+
+        // Work around for missing responses in specification, e.g. for petstore.yaml
+        if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
+            const body: Array<AutoSuggestion> = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "Array<AutoSuggestion>", ""
+            ) as Array<AutoSuggestion>;
             return body;
         }
 
@@ -1162,6 +1476,42 @@ export class DefaultApiResponseProcessor {
                 ObjectSerializer.parse(await response.body.text(), contentType),
                 "Array<Transaction>", ""
             ) as Array<Transaction>;
+            return body;
+        }
+
+        throw new ApiException<string | Blob | undefined>(response.httpStatusCode, "Unknown API Status Code!", await response.getBodyAsAny(), response.headers);
+    }
+
+    /**
+     * Unwraps the actual response sent by the server from the response context and deserializes the response content
+     * to the expected objects
+     *
+     * @params response Response returned by the server for a request to getERC20Metadata
+     * @throws ApiException if the response code was not in [200, 299]
+     */
+     public async getERC20Metadata(response: ResponseContext): Promise<Array<ERC20Metadata> > {
+        const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
+        if (isCodeInRange("200", response.httpStatusCode)) {
+            const body: Array<ERC20Metadata> = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "Array<ERC20Metadata>", ""
+            ) as Array<ERC20Metadata>;
+            return body;
+        }
+        if (isCodeInRange("0", response.httpStatusCode)) {
+            const body: ErrorMessage = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "ErrorMessage", ""
+            ) as ErrorMessage;
+            throw new ApiException<ErrorMessage>(response.httpStatusCode, "An error message for unexpected requests.", body, response.headers);
+        }
+
+        // Work around for missing responses in specification, e.g. for petstore.yaml
+        if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
+            const body: Array<ERC20Metadata> = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "Array<ERC20Metadata>", ""
+            ) as Array<ERC20Metadata>;
             return body;
         }
 
@@ -1496,6 +1846,42 @@ export class DefaultApiResponseProcessor {
      * Unwraps the actual response sent by the server from the response context and deserializes the response content
      * to the expected objects
      *
+     * @params response Response returned by the server for a request to getWalletContractApprovals
+     * @throws ApiException if the response code was not in [200, 299]
+     */
+     public async getWalletContractApprovals(response: ResponseContext): Promise<Array<Transaction> > {
+        const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
+        if (isCodeInRange("200", response.httpStatusCode)) {
+            const body: Array<Transaction> = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "Array<Transaction>", ""
+            ) as Array<Transaction>;
+            return body;
+        }
+        if (isCodeInRange("0", response.httpStatusCode)) {
+            const body: ErrorMessage = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "ErrorMessage", ""
+            ) as ErrorMessage;
+            throw new ApiException<ErrorMessage>(response.httpStatusCode, "An error message for unexpected requests.", body, response.headers);
+        }
+
+        // Work around for missing responses in specification, e.g. for petstore.yaml
+        if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
+            const body: Array<Transaction> = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "Array<Transaction>", ""
+            ) as Array<Transaction>;
+            return body;
+        }
+
+        throw new ApiException<string | Blob | undefined>(response.httpStatusCode, "Unknown API Status Code!", await response.getBodyAsAny(), response.headers);
+    }
+
+    /**
+     * Unwraps the actual response sent by the server from the response context and deserializes the response content
+     * to the expected objects
+     *
      * @params response Response returned by the server for a request to getWalletMints
      * @throws ApiException if the response code was not in [200, 299]
      */
@@ -1568,6 +1954,42 @@ export class DefaultApiResponseProcessor {
      * Unwraps the actual response sent by the server from the response context and deserializes the response content
      * to the expected objects
      *
+     * @params response Response returned by the server for a request to getWalletTokensByCollections
+     * @throws ApiException if the response code was not in [200, 299]
+     */
+     public async getWalletTokensByCollections(response: ResponseContext): Promise<Array<OwnedCollection> > {
+        const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
+        if (isCodeInRange("200", response.httpStatusCode)) {
+            const body: Array<OwnedCollection> = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "Array<OwnedCollection>", ""
+            ) as Array<OwnedCollection>;
+            return body;
+        }
+        if (isCodeInRange("0", response.httpStatusCode)) {
+            const body: ErrorMessage = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "ErrorMessage", ""
+            ) as ErrorMessage;
+            throw new ApiException<ErrorMessage>(response.httpStatusCode, "An error message for unexpected requests.", body, response.headers);
+        }
+
+        // Work around for missing responses in specification, e.g. for petstore.yaml
+        if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
+            const body: Array<OwnedCollection> = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "Array<OwnedCollection>", ""
+            ) as Array<OwnedCollection>;
+            return body;
+        }
+
+        throw new ApiException<string | Blob | undefined>(response.httpStatusCode, "Unknown API Status Code!", await response.getBodyAsAny(), response.headers);
+    }
+
+    /**
+     * Unwraps the actual response sent by the server from the response context and deserializes the response content
+     * to the expected objects
+     *
      * @params response Response returned by the server for a request to getWalletTransactions
      * @throws ApiException if the response code was not in [200, 299]
      */
@@ -1594,6 +2016,42 @@ export class DefaultApiResponseProcessor {
                 ObjectSerializer.parse(await response.body.text(), contentType),
                 "Array<Transaction>", ""
             ) as Array<Transaction>;
+            return body;
+        }
+
+        throw new ApiException<string | Blob | undefined>(response.httpStatusCode, "Unknown API Status Code!", await response.getBodyAsAny(), response.headers);
+    }
+
+    /**
+     * Unwraps the actual response sent by the server from the response context and deserializes the response content
+     * to the expected objects
+     *
+     * @params response Response returned by the server for a request to getWalletsSuggestionsResults
+     * @throws ApiException if the response code was not in [200, 299]
+     */
+     public async getWalletsSuggestionsResults(response: ResponseContext): Promise<Array<AutoSuggestion> > {
+        const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
+        if (isCodeInRange("200", response.httpStatusCode)) {
+            const body: Array<AutoSuggestion> = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "Array<AutoSuggestion>", ""
+            ) as Array<AutoSuggestion>;
+            return body;
+        }
+        if (isCodeInRange("0", response.httpStatusCode)) {
+            const body: ErrorMessage = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "ErrorMessage", ""
+            ) as ErrorMessage;
+            throw new ApiException<ErrorMessage>(response.httpStatusCode, "An error message for unexpected requests.", body, response.headers);
+        }
+
+        // Work around for missing responses in specification, e.g. for petstore.yaml
+        if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
+            const body: Array<AutoSuggestion> = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "Array<AutoSuggestion>", ""
+            ) as Array<AutoSuggestion>;
             return body;
         }
 

@@ -9,11 +9,14 @@ import { Collection } from '../models/Collection';
 import { CreditEvent } from '../models/CreditEvent';
 import { CurrencyInfo } from '../models/CurrencyInfo';
 import { ENS } from '../models/ENS';
+import { ERC20Metadata } from '../models/ERC20Metadata';
 import { ErrorMessage } from '../models/ErrorMessage';
 import { ExchangeEvent } from '../models/ExchangeEvent';
 import { Media } from '../models/Media';
 import { MediaPreview } from '../models/MediaPreview';
 import { MediaVersion } from '../models/MediaVersion';
+import { NFTTransaction } from '../models/NFTTransaction';
+import { NFTTransactionLogLine } from '../models/NFTTransactionLogLine';
 import { NonFungibleToken } from '../models/NonFungibleToken';
 import { OpenSeaContract } from '../models/OpenSeaContract';
 import { OwnedCollection } from '../models/OwnedCollection';
@@ -30,6 +33,15 @@ import { Wallet } from '../models/Wallet';
 import { ObservableAlphaApi } from "./ObservableAPI";
 import { AlphaApiRequestFactory, AlphaApiResponseProcessor} from "../apis/AlphaApi";
 
+export interface AlphaApiGetTokensSuggestionsResultsRequest {
+    /**
+     * A query or partial query that can be used to retrieve suggested results. For example \&quot;bored a\&quot; would return a suggestion for \&quot;bored ape.\&quot;
+     * @type string
+     * @memberof AlphaApigetTokensSuggestionsResults
+     */
+    query?: string
+}
+
 export interface AlphaApiGetTopCollectionsRequest {
 }
 
@@ -37,6 +49,33 @@ export interface AlphaApiGetTopTokensRequest {
 }
 
 export interface AlphaApiGetTopWalletsRequest {
+}
+
+export interface AlphaApiPostRefreshRequest {
+    /**
+     * A hex address for a blockchain contract.
+     * @type string
+     * @memberof AlphaApipostRefresh
+     */
+    contractAddress: string
+    /**
+     * An arbitrary ID defined by a contract to uniquely identify a cryptographic asset such as an NFT.
+     * @type string
+     * @memberof AlphaApipostRefresh
+     */
+    tokenID: string
+    /**
+     * An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
+     * @type string
+     * @memberof AlphaApipostRefresh
+     */
+    chainID?: string
+    /**
+     * Refresh media.
+     * @type boolean
+     * @memberof AlphaApipostRefresh
+     */
+    media?: boolean
 }
 
 export class ObjectAlphaApi {
@@ -47,7 +86,17 @@ export class ObjectAlphaApi {
     }
 
     /**
+     * Get autocomplete-style search suggestions for tokens.
+     * Autocomplete tokens
+     * @param param the request object
+     */
+    public getTokensSuggestionsResults(param: AlphaApiGetTokensSuggestionsResultsRequest = {}, options?: Configuration): Promise<Array<AutoSuggestion>> {
+        return this.api.getTokensSuggestionsResults(param.query,  options).toPromise();
+    }
+
+    /**
      * Returns trending and interesting collections on Ethereum. Useful for powering discovery experiences and providing an on-ramp to exploring creative blockchain data.
+     * Get top collections
      * @param param the request object
      */
     public getTopCollections(param: AlphaApiGetTopCollectionsRequest = {}, options?: Configuration): Promise<Array<Collection>> {
@@ -56,6 +105,7 @@ export class ObjectAlphaApi {
 
     /**
      * Returns trending and interesting NFTs and SFTs on Ethereum. Useful for powering discovery experiences and providing an on-ramp to exploring creative blockchain data.
+     * Get top tokens
      * @param param the request object
      */
     public getTopTokens(param: AlphaApiGetTopTokensRequest = {}, options?: Configuration): Promise<Array<Token>> {
@@ -64,10 +114,20 @@ export class ObjectAlphaApi {
 
     /**
      * Returns trending and interesting wallets on Ethereum. Useful for powering discovery experiences and providing an on-ramp to exploring creative blockchain data.
+     * Get top wallets
      * @param param the request object
      */
     public getTopWallets(param: AlphaApiGetTopWalletsRequest = {}, options?: Configuration): Promise<Array<Wallet>> {
         return this.api.getTopWallets( options).toPromise();
+    }
+
+    /**
+     * The metadata will be refreshed offline and later updated.
+     * Submit a request for metadata to be refreshed.
+     * @param param the request object
+     */
+    public postRefresh(param: AlphaApiPostRefreshRequest, options?: Configuration): Promise<void> {
+        return this.api.postRefresh(param.contractAddress, param.tokenID, param.chainID, param.media,  options).toPromise();
     }
 
 }
@@ -91,6 +151,15 @@ export interface DefaultApiGetCollectionRequest {
      * @memberof DefaultApigetCollection
      */
     chainID?: string
+}
+
+export interface DefaultApiGetCollectionsSuggestionsResultsRequest {
+    /**
+     * A query or partial query that can be used to retrieve suggested results. For example \&quot;bored a\&quot; would return a suggestion for \&quot;bored ape.\&quot;
+     * @type string
+     * @memberof DefaultApigetCollectionsSuggestionsResults
+     */
+    query?: string
 }
 
 export interface DefaultApiGetContractGateRequest {
@@ -170,7 +239,7 @@ export interface DefaultApiGetContractTransactionHistoryRequest {
      */
     contractAddress: string
     /**
-     * Cursor to support API pagination.
+     * Cursor to support API pagination. This value is returned via the X-Doc-Next-Link HTTP response header for endpoints that support pagination and have more documents available. The cursor expires after 24-hours.
      * @type string
      * @memberof DefaultApigetContractTransactionHistory
      */
@@ -189,6 +258,21 @@ export interface DefaultApiGetContractTransactionHistoryRequest {
     limit?: number
 }
 
+export interface DefaultApiGetERC20MetadataRequest {
+    /**
+     * A hex address for a blockchain contract.
+     * @type string
+     * @memberof DefaultApigetERC20Metadata
+     */
+    contractAddress: string
+    /**
+     * An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
+     * @type string
+     * @memberof DefaultApigetERC20Metadata
+     */
+    chainID?: string
+}
+
 export interface DefaultApiGetSearchResultsRequest {
     /**
      * A search query that returns matching results
@@ -197,11 +281,17 @@ export interface DefaultApiGetSearchResultsRequest {
      */
     query: string
     /**
-     * Cursor to support API pagination.
+     * Cursor to support API pagination. This value is returned via the X-Doc-Next-Link HTTP response header for endpoints that support pagination and have more documents available. The cursor expires after 24-hours.
      * @type string
      * @memberof DefaultApigetSearchResults
      */
     cursor?: string
+    /**
+     * Limits the number of results in a single response.
+     * @type number
+     * @memberof DefaultApigetSearchResults
+     */
+    limit?: number
 }
 
 export interface DefaultApiGetSoldTokensRequest {
@@ -218,7 +308,7 @@ export interface DefaultApiGetSoldTokensRequest {
      */
     chainID?: string
     /**
-     * Cursor to support API pagination.
+     * Cursor to support API pagination. This value is returned via the X-Doc-Next-Link HTTP response header for endpoints that support pagination and have more documents available. The cursor expires after 24-hours.
      * @type string
      * @memberof DefaultApigetSoldTokens
      */
@@ -323,7 +413,19 @@ export interface DefaultApiGetTokensBySearchQueryRequest {
      */
     query: string
     /**
-     * Cursor to support API pagination.
+     * An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
+     * @type string
+     * @memberof DefaultApigetTokensBySearchQuery
+     */
+    chainID?: string
+    /**
+     * Limits the number of results in a single response.
+     * @type number
+     * @memberof DefaultApigetTokensBySearchQuery
+     */
+    limit?: number
+    /**
+     * Cursor to support API pagination. This value is returned via the X-Doc-Next-Link HTTP response header for endpoints that support pagination and have more documents available. The cursor expires after 24-hours.
      * @type string
      * @memberof DefaultApigetTokensBySearchQuery
      */
@@ -358,6 +460,21 @@ export interface DefaultApiGetWalletBalancesRequest {
      * @memberof DefaultApigetWalletBalances
      */
     limit?: number
+    /**
+     * An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
+     * @type string
+     * @memberof DefaultApigetWalletBalances
+     */
+    chainID?: string
+}
+
+export interface DefaultApiGetWalletContractApprovalsRequest {
+    /**
+     * A hex string referencing a public wallet address.
+     * @type string
+     * @memberof DefaultApigetWalletContractApprovals
+     */
+    walletAddress: string
 }
 
 export interface DefaultApiGetWalletMintsRequest {
@@ -374,7 +491,7 @@ export interface DefaultApiGetWalletMintsRequest {
      */
     chainID?: string
     /**
-     * Cursor to support API pagination.
+     * Cursor to support API pagination. This value is returned via the X-Doc-Next-Link HTTP response header for endpoints that support pagination and have more documents available. The cursor expires after 24-hours.
      * @type string
      * @memberof DefaultApigetWalletMints
      */
@@ -395,7 +512,13 @@ export interface DefaultApiGetWalletTokensRequest {
      */
     walletAddress: string
     /**
-     * Cursor to support API pagination.
+     * A boolean that will remove airdropped tokens from a result set.
+     * @type boolean
+     * @memberof DefaultApigetWalletTokens
+     */
+    filterAirdrops?: boolean
+    /**
+     * Cursor to support API pagination. This value is returned via the X-Doc-Next-Link HTTP response header for endpoints that support pagination and have more documents available. The cursor expires after 24-hours.
      * @type string
      * @memberof DefaultApigetWalletTokens
      */
@@ -410,6 +533,39 @@ export interface DefaultApiGetWalletTokensRequest {
      * Limits the number of results in a single response.
      * @type number
      * @memberof DefaultApigetWalletTokens
+     */
+    limit?: number
+}
+
+export interface DefaultApiGetWalletTokensByCollectionsRequest {
+    /**
+     * A hex string referencing a public wallet address.
+     * @type string
+     * @memberof DefaultApigetWalletTokensByCollections
+     */
+    walletAddress: string
+    /**
+     * Cursor to support API pagination. This value is returned via the X-Doc-Next-Link HTTP response header for endpoints that support pagination and have more documents available. The cursor expires after 24-hours.
+     * @type string
+     * @memberof DefaultApigetWalletTokensByCollections
+     */
+    cursor?: string
+    /**
+     * A boolean that will remove airdropped tokens from a result set.
+     * @type boolean
+     * @memberof DefaultApigetWalletTokensByCollections
+     */
+    filterAirdrops?: boolean
+    /**
+     * An identifier to restrict results to a given blockchain. Provide either a keyword such as \&quot;ethereum\&quot; or \&quot;polygon\&quot; to restrict to the mainnet for named chains. Also supports CAIP-2 identifiers.
+     * @type string
+     * @memberof DefaultApigetWalletTokensByCollections
+     */
+    chainID?: string
+    /**
+     * Limits the number of results in a single response.
+     * @type number
+     * @memberof DefaultApigetWalletTokensByCollections
      */
     limit?: number
 }
@@ -422,7 +578,7 @@ export interface DefaultApiGetWalletTransactionsRequest {
      */
     walletAddress: string
     /**
-     * Cursor to support API pagination.
+     * Cursor to support API pagination. This value is returned via the X-Doc-Next-Link HTTP response header for endpoints that support pagination and have more documents available. The cursor expires after 24-hours.
      * @type string
      * @memberof DefaultApigetWalletTransactions
      */
@@ -440,11 +596,20 @@ export interface DefaultApiGetWalletTransactionsRequest {
      */
     chainID?: string
     /**
-     * An indicator that be used to filter to only a subet of tokens, for example only NFTs. To select ERC-20, sidechain and L1 transactions, use the \&quot;fungible.\&quot; To select only NFTs or semi-fungible tokens (SFTs), use the respective enum.
+     * The token type filters a query to only a subset of tokens, for example, only NFTs. To select ERC-20 and sidechain transactions, use the \&quot;fungible\&quot; value. To select only NFTs or semi-fungible tokens (SFTs), use the \&quot;NFT\&quot; or \&quot;SFT\&quot; enums. To select only L1 native token transactions, use the \&quot;native\&quot; enum.
      * @type &#39;native&#39; | &#39;fungible&#39; | &#39;NFT&#39; | &#39;SFT&#39; | &#39;unknown&#39;
      * @memberof DefaultApigetWalletTransactions
      */
     tokenType?: 'native' | 'fungible' | 'NFT' | 'SFT' | 'unknown'
+}
+
+export interface DefaultApiGetWalletsSuggestionsResultsRequest {
+    /**
+     * A query or partial query that can be used to retrieve suggested results. For example \&quot;bored a\&quot; would return a suggestion for \&quot;bored ape.\&quot;
+     * @type string
+     * @memberof DefaultApigetWalletsSuggestionsResults
+     */
+    query?: string
 }
 
 export class ObjectDefaultApi {
@@ -456,6 +621,7 @@ export class ObjectDefaultApi {
 
     /**
      * Lists all supported blockchains.
+     * Get supported blockchains
      * @param param the request object
      */
     public getBlockchains(param: DefaultApiGetBlockchainsRequest = {}, options?: Configuration): Promise<Array<BlockchainInfo>> {
@@ -464,6 +630,7 @@ export class ObjectDefaultApi {
 
     /**
      * Get a collection by its contract address.
+     * Get collection
      * @param param the request object
      */
     public getCollection(param: DefaultApiGetCollectionRequest, options?: Configuration): Promise<Array<Collection>> {
@@ -471,7 +638,17 @@ export class ObjectDefaultApi {
     }
 
     /**
+     * Get autocomplete-style search suggestions for collections.
+     * Autocomplete collections
+     * @param param the request object
+     */
+    public getCollectionsSuggestionsResults(param: DefaultApiGetCollectionsSuggestionsResultsRequest = {}, options?: Configuration): Promise<Array<AutoSuggestion>> {
+        return this.api.getCollectionsSuggestionsResults(param.query,  options).toPromise();
+    }
+
+    /**
      * Determine if a wallet has any token from a contract.
+     * Has tokens
      * @param param the request object
      */
     public getContractGate(param: DefaultApiGetContractGateRequest, options?: Configuration): Promise<AssetGate> {
@@ -480,6 +657,7 @@ export class ObjectDefaultApi {
 
     /**
      * Get tokens by contract address.
+     * Get tokens
      * @param param the request object
      */
     public getContractTokens(param: DefaultApiGetContractTokensRequest, options?: Configuration): Promise<Array<Token>> {
@@ -488,6 +666,7 @@ export class ObjectDefaultApi {
 
     /**
      * Returns tokens from a batch lookup.
+     * Batch token lookup
      * @param param the request object
      */
     public getContractTokensByContractAndID(param: DefaultApiGetContractTokensByContractAndIDRequest, options?: Configuration): Promise<Array<Token>> {
@@ -495,7 +674,8 @@ export class ObjectDefaultApi {
     }
 
     /**
-     * Get the transaction history for a collection
+     * Get the transaction history for a collection.
+     * Get collection transactions
      * @param param the request object
      */
     public getContractTransactionHistory(param: DefaultApiGetContractTransactionHistoryRequest, options?: Configuration): Promise<Array<Transaction>> {
@@ -503,15 +683,26 @@ export class ObjectDefaultApi {
     }
 
     /**
+     * Get ERC-20 metadata by contract address.
+     * Get ERC-20 metadata
+     * @param param the request object
+     */
+    public getERC20Metadata(param: DefaultApiGetERC20MetadataRequest, options?: Configuration): Promise<Array<ERC20Metadata>> {
+        return this.api.getERC20Metadata(param.contractAddress, param.chainID,  options).toPromise();
+    }
+
+    /**
      * Get search results such as wallets, tokens, and collections by a search query.
+     * Search
      * @param param the request object
      */
     public getSearchResults(param: DefaultApiGetSearchResultsRequest, options?: Configuration): Promise<Array<SearchDocument>> {
-        return this.api.getSearchResults(param.query, param.cursor,  options).toPromise();
+        return this.api.getSearchResults(param.query, param.cursor, param.limit,  options).toPromise();
     }
 
     /**
      * Returns a list of tokens sold by a wallet.
+     * Get sold tokens
      * @param param the request object
      */
     public getSoldTokens(param: DefaultApiGetSoldTokensRequest, options?: Configuration): Promise<Array<Token>> {
@@ -520,6 +711,7 @@ export class ObjectDefaultApi {
 
     /**
      * Get autocomplete-style search suggestions for results.
+     * Autocomplete
      * @param param the request object
      */
     public getSuggestionsResults(param: DefaultApiGetSuggestionsResultsRequest = {}, options?: Configuration): Promise<Array<AutoSuggestion>> {
@@ -528,6 +720,7 @@ export class ObjectDefaultApi {
 
     /**
      * Get a token by its contract address and token ID.
+     * Get token
      * @param param the request object
      */
     public getToken(param: DefaultApiGetTokenRequest, options?: Configuration): Promise<Array<Token>> {
@@ -536,6 +729,7 @@ export class ObjectDefaultApi {
 
     /**
      * Determine if a wallet has a given token from a contract.
+     * Has token
      * @param param the request object
      */
     public getTokenGate(param: DefaultApiGetTokenGateRequest, options?: Configuration): Promise<AssetGate> {
@@ -544,6 +738,7 @@ export class ObjectDefaultApi {
 
     /**
      * Returns a list of transfer transactions on a specified token.
+     * Get token transfers
      * @param param the request object
      */
     public getTokenTransfers(param: DefaultApiGetTokenTransfersRequest, options?: Configuration): Promise<TokenEvents> {
@@ -552,14 +747,16 @@ export class ObjectDefaultApi {
 
     /**
      * Get tokens by a search query.
+     * Search tokens
      * @param param the request object
      */
     public getTokensBySearchQuery(param: DefaultApiGetTokensBySearchQueryRequest, options?: Configuration): Promise<Array<Token>> {
-        return this.api.getTokensBySearchQuery(param.query, param.cursor,  options).toPromise();
+        return this.api.getTokensBySearchQuery(param.query, param.chainID, param.limit, param.cursor,  options).toPromise();
     }
 
     /**
-     * Get a wallet by a wallet address
+     * Get a wallet by a wallet address.
+     * Get wallet
      * @param param the request object
      */
     public getWallet(param: DefaultApiGetWalletRequest, options?: Configuration): Promise<Array<Wallet>> {
@@ -567,15 +764,26 @@ export class ObjectDefaultApi {
     }
 
     /**
-     * Returns a list of balances for tokens this wallet currently owns.
+     * Returns a list of balances for tokens this wallet currently owns, sorted by contract.
+     * Get balances
      * @param param the request object
      */
     public getWalletBalances(param: DefaultApiGetWalletBalancesRequest, options?: Configuration): Promise<Array<CurrencyInfo>> {
-        return this.api.getWalletBalances(param.walletAddress, param.limit,  options).toPromise();
+        return this.api.getWalletBalances(param.walletAddress, param.limit, param.chainID,  options).toPromise();
+    }
+
+    /**
+     * Returns the latest approval events for all contracts the wallet has given spending authority to.
+     * Get approved contracts
+     * @param param the request object
+     */
+    public getWalletContractApprovals(param: DefaultApiGetWalletContractApprovalsRequest, options?: Configuration): Promise<Array<Transaction>> {
+        return this.api.getWalletContractApprovals(param.walletAddress,  options).toPromise();
     }
 
     /**
      * Returns a list of tokens minted by a wallet.
+     * Get minted tokens
      * @param param the request object
      */
     public getWalletMints(param: DefaultApiGetWalletMintsRequest, options?: Configuration): Promise<Array<Token>> {
@@ -584,18 +792,38 @@ export class ObjectDefaultApi {
 
     /**
      * Returns a list of tokens owned by a wallet.
+     * Get owned tokens
      * @param param the request object
      */
     public getWalletTokens(param: DefaultApiGetWalletTokensRequest, options?: Configuration): Promise<Array<Token>> {
-        return this.api.getWalletTokens(param.walletAddress, param.cursor, param.chainID, param.limit,  options).toPromise();
+        return this.api.getWalletTokens(param.walletAddress, param.filterAirdrops, param.cursor, param.chainID, param.limit,  options).toPromise();
+    }
+
+    /**
+     * Returns a list of collections with tokens owned by a wallet.
+     * Get owned NFT collections
+     * @param param the request object
+     */
+    public getWalletTokensByCollections(param: DefaultApiGetWalletTokensByCollectionsRequest, options?: Configuration): Promise<Array<OwnedCollection>> {
+        return this.api.getWalletTokensByCollections(param.walletAddress, param.cursor, param.filterAirdrops, param.chainID, param.limit,  options).toPromise();
     }
 
     /**
      * Returns transactions related to a wallet.
+     * Get wallet transactions
      * @param param the request object
      */
     public getWalletTransactions(param: DefaultApiGetWalletTransactionsRequest, options?: Configuration): Promise<Array<Transaction>> {
         return this.api.getWalletTransactions(param.walletAddress, param.cursor, param.limit, param.chainID, param.tokenType,  options).toPromise();
+    }
+
+    /**
+     * Get autocomplete-style search suggestions for wallets.
+     * Autocomplete wallets
+     * @param param the request object
+     */
+    public getWalletsSuggestionsResults(param: DefaultApiGetWalletsSuggestionsResultsRequest = {}, options?: Configuration): Promise<Array<AutoSuggestion>> {
+        return this.api.getWalletsSuggestionsResults(param.query,  options).toPromise();
     }
 
 }
